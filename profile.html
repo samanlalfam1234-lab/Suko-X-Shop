@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Min Konto | Suko Shop</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1a1a1a;
+            --text-dim: #6c757d;
+            --border: #d2d2d7;
+            --accent: #0066cc;
+            --accent-light: #e6f0ff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Theme Variables */
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f8f9fa;
+            --text-dim: #adb5bd;
+            --border: #2d3748;
+            --accent: #4d94ff;
+            --accent-light: rgba(77, 148, 255, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .profile-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .sidebar, .main-content {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Sidebar Styles */
+        .sidebar { 
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+        }
+
+        .profile-pic-container {
+            position: relative;
+            width: 130px;
+            margin: 0 auto 1rem;
+        }
+
+        #profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border);
+            background: #eee;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .change-pic-btn {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            text-decoration: none;
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .change-pic-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        #file-input { display: none; }
+
+        .sidebar h2 { 
+            font-size: 1.25rem; 
+            font-weight: 800; 
+            margin-top: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar p { 
+            font-size: 0.85rem; 
+            color: var(--text-dim); 
+            margin-bottom: 1.5rem; 
+        }
+
+        .side-nav { text-align: left; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+        .side-nav a {
+            display: block;
+            text-decoration: none;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-bottom: 6px;
+        }
+
+        .side-nav a:hover {
+            background: var(--bg);
+            color: var(--text-main);
+        }
+
+        .side-nav a.active {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn { color: #ff4444 !important; margin-top: 1rem; }
+        .logout-btn:hover { background: rgba(255, 68, 68, 0.05) !important; }
+
+        /* Main Content Styles */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .content-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .content-section.active { display: block; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .info-item span { font-size: 1rem; font-weight: 600; }
+
+        /* Settings Styles */
+        .settings-group { margin-bottom: 2rem; }
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item label { font-weight: 700; font-size: 0.95rem; }
+
+        input[type="text"] {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 1rem;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 850px) {
+            .profile-wrapper { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-wrapper">
+        <aside class="sidebar">
+            <div class="profile-pic-container">
+                <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profilbillede">
+                <label for="file-input" class="change-pic-btn">Skift billede</label>
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+            <h2 id="side-name">Indlæser...</h2>
+            <p id="side-email">Indlæser...</p>
+            
+            <nav class="side-nav">
+                <a href="index.html">← Forsiden</a>
+                <a href="#" class="nav-link active" data-target="info">Brugerinfo</a>
+                <a href="#" class="nav-link" data-target="settings">Indstillinger</a>
+                <a href="#" class="nav-link" id="user-tickets-link" data-target="tickets">Mine Tickets</a>
+                <a href="admin.html" id="admin-tickets-link" style="display: none; color: #cc0000; text-decoration: none; font-size: 0.9rem; padding: 0.6rem 0.8rem; font-weight: 500;">★ Staff Panel</a>
+                <a href="#" id="logout-btn" class="logout-btn">Log ud</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- User Info Section -->
+            <section id="info-section" class="content-section active">
+                <h3 class="section-title">Brugerinformation</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Fulde Navn</label>
+                        <span id="full-name">Indlæser...</span>
+                    </div>
+                    <div class="info-item">
+                        <label>E-mail</label>
+                        <span id="full-email">Indlæser...</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Medlem Siden</label>
+                        <span>Februar 2026</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tickets Section (User) -->
+            <section id="tickets-section" class="content-section">
+                <h3 class="section-title">Mine Tickets</h3>
+                <div id="tickets-list">
+                    <p style="color: var(--text-dim);">Du har ingen aktive tickets.</p>
+                </div>
+                <a href="tickets.html" class="btn-save" style="display: block; text-align: center; text-decoration: none; margin-top: 2rem;">Opret ny ticket</a>
+            </section>
+
+            <!-- Admin Tickets Section -->
+            <section id="admin-tickets-section" class="content-section">
+                <h3 class="section-title">Admin Panel: Alle Tickets</h3>
+                <div id="admin-tickets-list">
+                    <!-- Indlæses via JS -->
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section">
+                <h3 class="section-title">Indstillinger</h3>
+                
+                <div class="settings-group">
+                    <div class="settings-item" style="flex-direction: column; align-items: flex-start;">
+                        <label>Skift Navn</label>
+                        <input type="text" id="edit-name" placeholder="Indtast nyt navn">
+                    </div>
+
+                    <div class="settings-item" style="flex-direction: column; align-items: flex-start;">
+                        <label>Skift E-mail</label>
+                        <input type="text" id="edit-email" placeholder="Indtast ny e-mail">
+                    </div>
+                </div>
+
+                <button class="btn-save" id="save-settings">Gem ændringer</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Tab switching logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.content-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('data-target');
+                
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                sections.forEach(s => {
+                    s.classList.remove('active');
+                    if(s.id === target + '-section') s.classList.add('active');
+                });
+            });
+        });
+
+        // Load Initial Data
+        function loadData() {
+            const userName = localStorage.getItem('userName') || 'Konto';
+            const userEmail = localStorage.getItem('userEmail') || 'ikke angivet';
+            const profilePic = localStorage.getItem('profilePic');
+
+            if (profilePic) {
+                document.getElementById('profile-pic').src = profilePic;
+            }
+
+            document.getElementById('side-name').textContent = 'Konto';
+            document.getElementById('full-name').textContent = userName;
+            document.getElementById('edit-name').value = userName;
+            document.getElementById('side-email').textContent = userEmail;
+            document.getElementById('full-email').textContent = userEmail;
+            document.getElementById('edit-email').value = userEmail === 'ikke angivet' ? '' : userEmail;
+
+            document.body.classList.add('dark-theme');
+
+            const isStaff = localStorage.getItem('isStaff') === 'true';
+            const allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+
+            // Sidebar visning baseret på rolle
+            if (isStaff) {
+                document.getElementById('admin-tickets-link').style.display = 'block';
+                document.getElementById('user-tickets-link').style.display = 'none';
+            } else {
+                document.getElementById('admin-tickets-link').style.display = 'none';
+                document.getElementById('user-tickets-link').style.display = 'block';
+            }
+
+            // Bruger-specifikke tickets
+            const userTickets = allTickets.filter(t => t.owner === userName || t.owner === undefined);
+            const ticketsList = document.getElementById('tickets-list');
+            
+            if (userTickets.length > 0) {
+                ticketsList.innerHTML = '';
+                userTickets.forEach(t => {
+                    const div = document.createElement('div');
+                    div.style.padding = '1rem';
+                    div.style.borderBottom = '1px solid var(--border)';
+                    div.style.marginBottom = '1rem';
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>${t.subject}</strong>
+                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : 'var(--accent)'}; color: var(--bg); padding: 2px 8px; border-radius: 10px;">${t.status}</span>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">${t.message.substring(0, 100)}${t.message.length > 100 ? '...' : ''}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--text-dim);">ID: ${t.id} • Dato: ${t.date}</div>
+                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px;">Åbn Ticket</a>
+                        </div>
+                    `;
+                    ticketsList.appendChild(div);
+                });
+            } else {
+                ticketsList.innerHTML = '<p style="color: var(--text-dim);">Du har ingen aktive tickets.</p>';
+            }
+
+            // Admin-specifikke tickets (Staff visning)
+            if (isStaff) {
+                const adminList = document.getElementById('admin-tickets-list');
+                adminList.innerHTML = '';
+                if (allTickets.length === 0) {
+                    adminList.innerHTML = '<p style="color: var(--text-dim);">Der er ingen tickets i systemet.</p>';
+                }
+                allTickets.forEach(t => {
+                    const div = document.createElement('div');
+                    div.style.padding = '1.5rem';
+                    div.style.border = '1px solid var(--border)';
+                    div.style.borderRadius = '8px';
+                    div.style.marginBottom = '1.5rem';
+                    div.style.background = 'rgba(0,0,0,0.02)';
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim);">BRUGER: ${t.owner || 'Ukendt'}</span>
+                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : '#27ae60'}; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">${t.status}</span>
+                        </div>
+                        <h4 style="margin-bottom: 0.5rem;">${t.subject}</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-dim);">${t.message}</p>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; background: var(--accent); color: var(--bg); text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 600;">Gå til chat</a>
+                            <button onclick="closeTicket('${t.id}')" style="font-size: 0.8rem; background: #ff4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">Slet Ticket</button>
+                        </div>
+                    `;
+                    adminList.appendChild(div);
+                });
+            }
+        }
+
+        // Funktion til at slette en ticket
+        function closeTicket(id) {
+            if (confirm('Er du sikker på, at du vil slette denne ticket permanent?')) {
+                const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                const filteredTickets = tickets.filter(t => t.id !== id);
+                localStorage.setItem('userTickets', JSON.stringify(filteredTickets));
+                loadData(); // Opdater visning
+            }
+        }
+
+        loadData();
+
+        // Save Settings
+        document.getElementById('save-settings').addEventListener('click', () => {
+            const newName = document.getElementById('edit-name').value;
+            const newEmail = document.getElementById('edit-email').value;
+            
+            if (newName) localStorage.setItem('userName', newName);
+            if (newEmail) localStorage.setItem('userEmail', newEmail);
+            
+            loadData();
+            alert('Indstillinger gemt!');
+        });
+
+        // Profile Pic
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Image = event.target.result;
+                    document.getElementById('profile-pic').src = base64Image;
+                    localStorage.setItem('profilePic', base64Image);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

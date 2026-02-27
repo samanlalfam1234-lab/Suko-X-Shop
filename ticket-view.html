@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Visning | Suko Shop</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1d1d1f;
+            --text-dim: #86868b;
+            --accent: #0066cc;
+            --accent-light: #e6f0ff;
+            --border: #d2d2d7;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f5f5f7;
+            --text-dim: #86868b;
+            --accent: #4d94ff;
+            --accent-light: rgba(77, 148, 255, 0.1);
+            --border: #2d3748;
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 60px;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+        }
+
+        .ticket-view-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s ease-out;
+            backdrop-filter: saturate(180%) blur(20px);
+        }
+
+        .ticket-header {
+            padding: 2.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .ticket-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .ticket-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .ticket-id {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            background: #34c759;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .chat-container {
+            padding: 2.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: var(--bg);
+            scroll-behavior: smooth;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1.25rem 1.5rem;
+            border-radius: 18px;
+            position: relative;
+            line-height: 1.6;
+            animation: messageAppear 0.3s ease-out;
+            word-wrap: break-word;
+        }
+
+        .message.customer {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--accent) 0%, #0052a3 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
+        }
+
+        .message.staff {
+            align-self: flex-start;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .message-meta {
+            font-size: 0.65rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.75;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .message.customer .message-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message-content {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .chat-input-area {
+            padding: 2rem 2.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            background: var(--card-bg);
+            align-items: flex-end;
+        }
+
+        textarea {
+            flex-grow: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            border-radius: 14px;
+            resize: none;
+            height: 50px;
+            max-height: 120px;
+            outline: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        textarea:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--card-bg);
+        }
+
+        .send-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 102, 204, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.35);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #999;
+            box-shadow: none;
+        }
+
+        .send-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-nav {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 2rem;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .back-nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-nav a:hover {
+            color: var(--accent);
+        }
+
+        .access-denied-container {
+            text-align: center;
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .access-denied-container h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-denied-container p {
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+        }
+
+        .access-denied-container a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .access-denied-container a:hover {
+            opacity: 0.8;
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .close-ticket-btn {
+            background: #ff3b30;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 59, 48, 0.2);
+        }
+
+        .close-ticket-btn:hover {
+            background: #ff1c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+        }
+
+        .close-ticket-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 600px) {
+            .ticket-view-container {
+                max-width: 100%;
+                border-radius: 12px;
+            }
+
+            .message {
+                max-width: 90% !important;
+            }
+
+            .chat-container {
+                padding: 1.5rem;
+                max-height: 400px;
+            }
+
+            .chat-input-area {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            textarea {
+                width: 100%;
+            }
+
+            .send-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="back-nav">
+        <a href="profile.html">← Tilbage til profil</a>
+    </div>
+
+    <div class="ticket-view-container" id="access-denied" style="display: none;">
+        <div class="access-denied-container">
+            <h1>🔒 Adgang nægtet</h1>
+            <p>Du har ikke tilladelse til at se denne ticket.</p>
+            <a href="profile.html">← Tilbage til profil</a>
+        </div>
+    </div>
+
+    <div class="ticket-view-container" id="main-view">
+        <div class="ticket-header">
+            <div class="ticket-header-info">
+                <h1 id="ticket-id-display">Ticket #0000</h1>
+                <p id="ticket-subject" style="font-size: 0.9rem; color: var(--text-dim);"></p>
+                <p class="ticket-id" id="ticket-meta"></p>
+            </div>
+            <div class="ticket-actions">
+                <span class="status-badge" id="ticket-status">Åben</span>
+                <button class="close-ticket-btn" id="close-btn" style="display: none;">Luk Ticket</button>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chat-box">
+            <!-- Beskeder indlæses her -->
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="message-input" placeholder="Skriv din besked her..."></textarea>
+            <button class="send-btn" id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Tema håndtering
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketId = urlParams.get('id');
+        const currentUser = localStorage.getItem('userName');
+        const isStaff = localStorage.getItem('isStaff') === 'true';
+
+        function loadTicket() {
+            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            const ticket = tickets.find(t => t.id === ticketId);
+
+            if (!ticket) {
+                document.getElementById('main-view').style.display = 'none';
+                document.getElementById('access-denied').style.display = 'block';
+                return;
+            }
+
+            // Tjek adgang (Kunde eller Staff)
+            if (!isStaff && ticket.owner !== currentUser && ticket.owner !== undefined) {
+                 // Hvis ticket.owner findes og ikke matcher brugeren, og man ikke er staff
+                 // (Gamle tickets har ikke owner, så vi lader dem passere for bagudkompatibilitet)
+            }
+
+            const isClosed = ticket.status === 'Lukket';
+            const isOwner = !isStaff && (ticket.owner === currentUser || ticket.owner === undefined);
+
+            document.getElementById('ticket-id-display').textContent = 'Ticket ' + ticket.id;
+            document.getElementById('ticket-subject').textContent = ticket.subject;
+            document.getElementById('ticket-meta').textContent = 'Oprettet: ' + (ticket.date || 'N/A');
+            
+            const statusBadge = document.getElementById('ticket-status');
+            statusBadge.textContent = isClosed ? 'Lukket' : 'Åben';
+            statusBadge.style.background = isClosed ? '#999' : '#34c759';
+
+            const closeBtn = document.getElementById('close-btn');
+            if (isOwner && !isClosed) {
+                closeBtn.style.display = 'block';
+            } else {
+                closeBtn.style.display = 'none';
+            }
+
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+
+            // Den oprindelige besked
+            addMessage('Kunde', ticket.message, 'customer');
+
+            // Replies (vi gemmer dem i ticket objektet)
+            if (ticket.replies) {
+                ticket.replies.forEach(r => {
+                    addMessage(r.sender, r.text, r.role);
+                });
+            }
+
+            // Disable chat input if ticket is closed
+            const textarea = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            textarea.disabled = isClosed;
+            sendBtn.disabled = isClosed;
+            
+            if (isClosed) {
+                textarea.placeholder = 'Denne ticket er lukket';
+                sendBtn.textContent = 'Lukket';
+            }
+        }
+
+        function addMessage(sender, text, role) {
+            const chatBox = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `
+                <div class="message-meta">${sender}</div>
+                <div class="message-content">${text}</div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const text = document.getElementById('message-input').value.trim();
+            if (!text) return;
+
+            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+            
+            if (ticketIndex !== -1) {
+                if (!tickets[ticketIndex].replies) tickets[ticketIndex].replies = [];
+                
+                const role = isStaff ? 'staff' : 'customer';
+                const sender = isStaff ? 'Support Staff' : currentUser;
+
+                tickets[ticketIndex].replies.push({
+                    sender: sender,
+                    text: text,
+                    role: role,
+                    date: new Date().toLocaleString()
+                });
+
+                localStorage.setItem('userTickets', JSON.stringify(tickets));
+                addMessage(sender, text, role);
+                document.getElementById('message-input').value = '';
+                document.getElementById('message-input').focus();
+            }
+        }
+
+        function closeTicket() {
+            if (!confirm('Er du sikker på at du vil lukke denne ticket? Du kan ikke skrive flere beskeder efter lukning.')) {
+                return;
+            }
+
+            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+
+            if (ticketIndex !== -1) {
+                tickets[ticketIndex].status = 'Lukket';
+                localStorage.setItem('userTickets', JSON.stringify(tickets));
+                loadTicket();
+            }
+        }
+
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+        document.getElementById('close-btn').addEventListener('click', closeTicket);
+
+        document.getElementById('message-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        loadTicket();
+    </script>
+</body>
+</html>

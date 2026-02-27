@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suko Shop | Markedsplads for digitale aktiver</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1a1a1a;
+            --text-dim: #6c757d;
+            --border: #d2d2d7;
+            --accent: #0066cc;
+            --accent-light: #e6f0ff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Theme Variables */
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f8f9fa;
+            --text-dim: #adb5bd;
+            --border: #2d3748;
+            --accent: #4d94ff;
+            --accent-light: rgba(77, 148, 255, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: linear-gradient(-45deg, #0f1419, #1a1f2e, #0a0d12, #1a1f2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(-45deg, #f8f9fa, #ffffff, #e9ecef, #f8f9fa);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+            background: var(--bg);
+            border-color: var(--text-main);
+            box-shadow: var(--shadow);
+            color: var(--accent);
+        }
+
+        /* Specifik styling til Staff knappen */
+        .staff-btn {
+            border-color: rgba(204, 0, 0, 0.3) !important;
+            color: #cc0000 !important;
+        }
+
+        .staff-btn:hover {
+            background: #cc0000 !important;
+            color: white !important;
+            border-color: #cc0000 !important;
+        }
+
+        /* Specifik styling til Log ud */
+        .logout-nav-btn:hover {
+            background: #ff4444 !important;
+            color: white !important;
+            border-color: #ff4444 !important;
+        }
+
+        .hero {
+            padding: 140px 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            line-height: 1.05;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 1.2rem 3rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            opacity: 0.95;
+        }
+
+        .features {
+            padding: 100px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .feature-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-item p {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        footer {
+            padding: 6rem 5%;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        /* Popup Overlay Improvements */
+        #login-popup-overlay {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 4rem;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .popup-btn {
+            background: #000000;
+            color: #ffffff;
+            padding: 1.2rem 2rem;
+            text-decoration: none;
+            font-weight: 700;
+            display: block;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+
+        body.dark-theme .popup-content { background: #141414; color: white; border: 1px solid #333; }
+        body.dark-theme .popup-btn { background: #ffffff; color: #000000; }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .hero { padding: 80px 5%; }
+        }
+    </style>
+    <style id="rain-style">
+        .rain-drop {
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.4);
+            width: 1px;
+            height: 20px;
+            top: -20px;
+            z-index: 1;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        body.dark-theme .rain-drop {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Suko Shop</div>
+        <nav id="nav-menu">
+            <a href="pricing.html">Store</a>
+            <a href="tos.html">Regler</a>
+            <a href="login.html" id="login-link">Log ind</a>
+            <a href="profile.html" id="account-link" style="display: none;">Konto</a>
+            <a href="#" id="logout-link" class="logout-nav-btn" style="display: none;">Log ud</a>
+        </nav>
+    </header>
+
+    <audio id="bg-music" loop>
+        <source src="https://orangefreesounds.com/wp-content/uploads/2015/01/Rain-sound-loop.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Login Popup Overlay -->
+    <div id="login-popup-overlay">
+        <div class="popup-content">
+            <h2>Log venligst ind</h2>
+            <p>Du skal være logget ind for at få adgang til Suko Shop.</p>
+            <a href="login.html" class="popup-btn">Gå til log ind</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
+            <h1>Velkommen til <br> Suko Shop</h1>
+        </section>
+
+        <section class="features">
+            <div class="feature-item">
+                <h3>Verificerede Data</h3>
+                <p>Vi tjekker altid Google Analytics og bankudskrifter, før en side bliver sat til salg hos os.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Sikker Handel</h3>
+                <p>Vores escrow-løsning sikrer, at pengene først frigives, når ejerskabet er 100% overdraget.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Hurtig Overførsel</h3>
+                <p>Vi hjælper med alt det tekniske omkring flytning af domæne og hosting-aftaler.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <button id="music-toggle" style="background: transparent; border: 1px solid var(--border); padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; color: var(--text-main); font-weight: 600; font-size: 0.7rem; display: flex; align-items: center; gap: 4px; margin: 0 auto 1.5rem;">
+            <span>🎵</span> <span id="music-status">Musik: Fra</span>
+        </button>
+        <p style="margin-bottom: 1rem;"><a href="https://discord.gg/prZgFSEYBZ" target="_blank" style="color: var(--text-main); font-weight: 700; text-decoration: underline;">Join discorden!</a></p>
+        <p>&copy; 2026 Suko Shop. Alle rettigheder forbeholdes. København, Danmark.</p>
+    </footer>
+
+    <script>
+        // Musik Toggle logik
+        const musicToggle = document.getElementById('music-toggle');
+        const musicStatus = document.getElementById('music-status');
+        const bgMusic = document.getElementById('bg-music');
+        
+        // Regn effekt logik
+        function createRain() {
+            const drop = document.createElement('div');
+            drop.className = 'rain-drop';
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+            drop.style.opacity = Math.random() * 0.5;
+            document.body.appendChild(drop);
+            
+            setTimeout(() => {
+                drop.remove();
+            }, 1000);
+        }
+
+        setInterval(createRain, 50);
+
+        // Sæt volumen lidt ned så det er "stille"
+        bgMusic.volume = 0.2;
+
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicStatus.textContent = 'Musik: Til';
+                musicToggle.style.borderColor = 'var(--accent)';
+            } else {
+                bgMusic.pause();
+                musicStatus.textContent = 'Musik: Fra';
+                musicToggle.style.borderColor = 'var(--border)';
+            }
+        });
+
+        // Tjek tema fra localStorage med det samme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        // Tjek om brugeren er logget ind
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const navMenu = document.getElementById('nav-menu');
+        const loginLink = document.getElementById('login-link');
+        const accountLink = document.getElementById('account-link');
+        const logoutLink = document.getElementById('logout-link');
+        const loginPopup = document.getElementById('login-popup-overlay');
+
+        if (isLoggedIn) {
+            loginLink.style.display = 'none';
+            accountLink.style.display = 'flex';
+            logoutLink.style.display = 'flex';
+            loginPopup.style.display = 'none';
+            
+            const isStaff = localStorage.getItem('isStaff') === 'true';
+            
+            if (isStaff) {
+                const adminBtn = document.createElement('a');
+                adminBtn.href = 'admin.html';
+                adminBtn.className = 'staff-btn';
+                adminBtn.innerHTML = '★ Staff Panel';
+                navMenu.insertBefore(adminBtn, accountLink);
+            }
+
+            logoutLink.onclick = (e) => {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('isStaff');
+                location.reload();
+            };
+        } else {
+            loginPopup.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

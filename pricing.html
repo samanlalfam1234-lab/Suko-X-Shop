@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store | Suko Shop</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1d1d1f;
+            --text-dim: #86868b;
+            --accent: #0066cc;
+            --accent-light: #e6f0ff;
+            --border: #d2d2d7;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f5f5f7;
+            --text-dim: #86868b;
+            --accent: #4d94ff;
+            --accent-light: rgba(77, 148, 255, 0.1);
+            --border: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(var(--bg), 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+
+        nav a {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        nav a:hover { opacity: 1; }
+
+        .hero {
+            padding: 120px 5% 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            line-height: 1.08349;
+            font-weight: 600;
+            letter-spacing: -0.003em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 24px;
+            line-height: 1.16667;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 40px 5% 100px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .store-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .store-card:hover { transform: scale(1.02); }
+        .store-card.selected { border-color: var(--accent); background: var(--bg); box-shadow: var(--shadow); }
+
+        .card-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card-price {
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+
+        .sub-options {
+            margin-top: 24px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .option-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .option-box.active { border-color: var(--accent); }
+
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .active .checkbox-custom { border-color: var(--accent); background: var(--accent); }
+        .active .checkbox-custom::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
+
+        .btn-buy {
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 980px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 40px;
+            text-align: center;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .btn-buy.show { visibility: visible; opacity: 1; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            padding: 40px 5%;
+            background: var(--card-bg);
+            color: var(--text-dim);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Suko Shop</a>
+        <nav id="nav-menu">
+            <a href="index.html">Forside</a>
+            <a href="profile.html" id="account-link">Konto</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Butik.</h1>
+        <p>Vælg din næste digitale løsning.</p>
+    </section>
+
+    <main class="store-grid">
+        <!-- Standard Website -->
+        <div class="store-card" onclick="window.location.href='templates.html'">
+            <div class="card-label">Standard</div>
+            <div class="card-title">Standard Hjemmeside</div>
+            <div class="card-price">Se alle skabeloner</div>
+            <p style="font-size: 14px; color: var(--text-dim);">Vælg mellem færdige designs til dit projekt.</p>
+        </div>
+
+        <!-- Custom Website -->
+        <div class="store-card" onclick="window.location.href='custom.html'">
+            <div class="card-label">Professionel</div>
+            <div class="card-title">Custom Hjemmeside</div>
+            <div class="card-price" id="custom-price-display">Fra 20 kr.</div>
+            <p style="font-size: 14px; color: var(--text-dim);">Vælg dine funktioner. 20 kr. startpris + 5 kr. pr. del.</p>
+
+            <div class="sub-options" id="custom-options">
+                <div class="option-box" onclick="toggleSub('fivem', event)">
+                    <span>FiveM Hjemmeside (+5 kr)</span>
+                    <div class="checkbox-custom" id="check-fivem"></div>
+                </div>
+
+                <!-- Disse kommer kun frem når FiveM er valgt -->
+                <div id="fivem-addons" style="display: none; flex-direction: column; gap: 12px; margin-left: 20px; border-left: 2px solid var(--border); padding-left: 15px; margin-top: 12px; animation: fadeIn 0.4s ease;">
+                    <div class="option-box" onclick="toggleSub('leaderboard', event)">
+                        <span>Leaderboard (+5 kr)</span>
+                        <div class="checkbox-custom" id="check-leaderboard"></div>
+                    </div>
+
+                    <div class="option-box" onclick="toggleSub('apply', event)">
+                        <span>Ansøgningssystem / Whitelist (+5 kr)</span>
+                        <div class="checkbox-custom" id="check-apply"></div>
+                    </div>
+
+                    <div class="option-box" onclick="toggleSub('admin', event)">
+                        <span>Admin Panel (+5 kr)</span>
+                        <div class="checkbox-custom" id="check-admin"></div>
+                    </div>
+
+                    <div class="option-box" onclick="toggleSub('other', event)">
+                        <span>Andet / Speciel beskrivelse (+5 kr)</span>
+                        <div class="checkbox-custom" id="check-other"></div>
+                    </div>
+                    <input type="text" id="other-text" placeholder="Beskriv dit ønske her..." style="display: none; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); font-size: 14px;">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div style="text-align: center; padding-bottom: 100px;">
+        <a href="#" id="final-buy-btn" class="btn-buy" onclick="goToTicket(event)">Fortsæt til bestilling</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Suko Shop. Alle rettigheder forbeholdes.</p>
+    </footer>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        let selectedPlan = '';
+        let isFiveM = false;
+        let hasLeaderboard = false;
+        let hasApply = false;
+        let hasAdmin = false;
+        let isOther = false;
+
+        function selectPlan(plan) {
+            selectedPlan = plan;
+            
+            // UI opdatering
+            document.querySelectorAll('.store-card').forEach(c => c.classList.remove('selected'));
+            const cards = document.querySelectorAll('.store-card');
+            if (cards[1]) cards[1].classList.add('selected');
+
+            // Vis/skjul custom options
+            const customOpts = document.getElementById('custom-options');
+            customOpts.style.display = (plan === 'custom') ? 'flex' : 'none';
+
+            // Vis købsknap
+            document.getElementById('final-buy-btn').classList.add('show');
+            updatePrice();
+        }
+
+        function toggleSub(type, event) {
+            event.stopPropagation();
+            if (type === 'fivem') isFiveM = !isFiveM;
+            else if (type === 'leaderboard') hasLeaderboard = !hasLeaderboard;
+            else if (type === 'apply') hasApply = !hasApply;
+            else if (type === 'admin') hasAdmin = !hasAdmin;
+            else if (type === 'other') {
+                isOther = !isOther;
+                document.getElementById('other-text').style.display = isOther ? 'block' : 'none';
+                if (isOther) document.getElementById('other-text').focus();
+            }
+            
+            updateChecks();
+            updatePrice();
+        }
+
+        function updatePrice() {
+            if (selectedPlan === 'custom') {
+                let price = 20;
+                let count = 0;
+                if (isFiveM) count++;
+                if (hasLeaderboard) count++;
+                if (hasApply) count++;
+                if (hasAdmin) count++;
+                if (isOther) count++;
+                
+                price += (count * 5);
+                document.getElementById('custom-price-display').textContent = price + ' kr.';
+            } else {
+                document.getElementById('custom-price-display').textContent = 'Fra 20 kr.';
+            }
+        }
+
+        function updateChecks() {
+            document.getElementById('check-fivem').parentElement.classList.toggle('active', isFiveM);
+            document.getElementById('check-leaderboard').parentElement.classList.toggle('active', hasLeaderboard);
+            document.getElementById('check-apply').parentElement.classList.toggle('active', hasApply);
+            document.getElementById('check-admin').parentElement.classList.toggle('active', hasAdmin);
+            document.getElementById('check-other').parentElement.classList.toggle('active', isOther);
+
+            // Vis/skjul addons baseret på om FiveM er valgt
+            document.getElementById('fivem-addons').style.display = isFiveM ? 'flex' : 'none';
+        }
+
+        function goToTicket(e) {
+            e.preventDefault();
+            if (selectedPlan !== 'custom') return;
+
+            let selections = [];
+            if (isFiveM) selections.push('FiveM Hjemmeside');
+            if (hasLeaderboard) selections.push('Leaderboard');
+            if (hasApply) selections.push('Ansøgningssystem');
+            if (hasAdmin) selections.push('Admin Panel');
+            if (isOther) {
+                const otherVal = document.getElementById('other-text').value.trim();
+                selections.push('Andet' + (otherVal ? ': ' + otherVal : ''));
+            }
+
+            if (selections.length === 0) {
+                alert('Vælg venligst mindst én funktion.');
+                return;
+            }
+
+            const totalPrice = 20 + (selections.length * 5);
+            const finalChoice = 'Custom: ' + selections.join(', ') + ' (' + totalPrice + ' kr)';
+
+            localStorage.setItem('pendingOrder', finalChoice);
+            window.location.href = 'tickets.html';
+        }
+
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        if (!isLoggedIn) {
+            document.getElementById('account-link').textContent = 'Log ind';
+            document.getElementById('account-link').href = 'login.html';
+        }
+    </script>
+
+</body>
+</html>

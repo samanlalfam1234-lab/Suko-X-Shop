@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opret Ticket | Suko Shop</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1a1a1a;
+            --text-dim: #6c757d;
+            --border: #d2d2d7;
+            --accent: #0066cc;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f8f9fa;
+            --text-dim: #adb5bd;
+            --border: #2d3748;
+            --accent: #4d94ff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ticket-container {
+            background: var(--card-bg);
+            padding: 4rem;
+            width: 100%;
+            max-width: 650px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.04em;
+        }
+
+        p {
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.03);
+        }
+
+        textarea {
+            height: 180px;
+            resize: vertical;
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 1.25rem;
+            border: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 2.5rem;
+            text-align: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ticket-container">
+        <h1>Opret en Ticket</h1>
+        <p>Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.</p>
+
+        <form id="ticketForm">
+            <div class="form-group">
+                <label>Emne</label>
+                <select id="subject" required onchange="checkSubject()">
+                    <option value="">Vælg emne...</option>
+                    <option value="Standard Hjemmeside (30 kr)">Køb af Standard Hjemmeside (30 kr)</option>
+                </select>
+            </div>
+
+            <!-- Template Selection (Synlig ved Standard) -->
+            <div class="form-group" id="template-group" style="display: none;">
+                <label>Vælg Template</label>
+                <select id="template-choice">
+                    <option value="FiveM Hjemmeside 1">FiveM Hjemmeside 1</option>
+                    <option value="FiveM Hjemmeside 2">FiveM Hjemmeside 2</option>
+                    <option value="FiveM Hjemmeside 3">FiveM Hjemmeside 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Besked</label>
+                <textarea id="message" placeholder="Beskriv dine ønsker eller spørgsmål..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn">Send Ticket</button>
+        </form>
+
+        <a href="pricing.html" class="back-link">← Tilbage til Store</a>
+    </div>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        function checkSubject() {
+            const subject = document.getElementById('subject').value;
+            const templateGroup = document.getElementById('template-group');
+            if (subject.includes('Standard Hjemmeside')) {
+                templateGroup.style.display = 'block';
+            } else {
+                templateGroup.style.display = 'none';
+            }
+        }
+
+        // Tjek om der er en pending order fra Store
+        const pendingOrder = localStorage.getItem('pendingOrder');
+        const selectedTemplate = localStorage.getItem('selectedTemplate');
+
+        if (pendingOrder) {
+            const subjectSelect = document.getElementById('subject');
+            
+            // Hvis det er en standard template fra templates.html
+            if (pendingOrder.startsWith('Standard (')) {
+                subjectSelect.value = 'Standard Hjemmeside (30 kr)';
+                if (selectedTemplate) {
+                    document.getElementById('template-choice').value = selectedTemplate;
+                }
+                checkSubject();
+            } else {
+                // Tjek om option allerede findes, ellers tilføj den
+                let found = false;
+                for (let i = 0; i < subjectSelect.options.length; i++) {
+                    if (subjectSelect.options[i].value.includes(pendingOrder)) {
+                        subjectSelect.selectedIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    const newOpt = document.createElement('option');
+                    newOpt.value = pendingOrder;
+                    newOpt.textContent = 'Køb af ' + pendingOrder;
+                    newOpt.selected = true;
+                    subjectSelect.appendChild(newOpt);
+                }
+            }
+            
+            // Fjern dem så de ikke hænger ved næste gang
+            localStorage.removeItem('pendingOrder');
+            localStorage.removeItem('selectedTemplate');
+        }
+
+        // Tjek om logget ind
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            alert('Du skal være logget ind for at oprette en ticket.');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('ticketForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let finalSubject = document.getElementById('subject').value;
+            if (finalSubject.includes('Standard Hjemmeside')) {
+                finalSubject += ' - Template: ' + document.getElementById('template-choice').value;
+            }
+
+            const ticket = {
+                id: '#' + Math.floor(1000 + Math.random() * 9000),
+                subject: finalSubject,
+                message: document.getElementById('message').value,
+                date: new Date().toLocaleDateString(),
+                status: 'Åben',
+                owner: localStorage.getItem('userName') || 'Ukendt'
+            };
+
+            // Gem ticket i localStorage
+            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            tickets.push(ticket);
+            localStorage.setItem('userTickets', JSON.stringify(tickets));
+
+            alert('Din ticket er nu oprettet! Vi vender tilbage snart.');
+            window.location.href = 'profile.html';
+        });
+    </script>
+
+</body>
+</html>

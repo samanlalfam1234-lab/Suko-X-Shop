@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Panel | Suko Shop</title>
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card-bg: #f0f4f9;
+            --text-main: #1d1d1f;
+            --text-dim: #86868b;
+            --accent: #0066cc;
+            --accent-light: #e6f0ff;
+            --danger: #ff3b30;
+            --border: #d2d2d7;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-theme {
+            --bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-main: #f5f5f7;
+            --text-dim: #86868b;
+            --accent: #4d94ff;
+            --accent-light: rgba(77, 148, 255, 0.1);
+            --border: #2d3748;
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.2); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 102, 204, 0); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px 60px;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+        }
+
+        .admin-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #admin-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-light);
+            border-radius: 20px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            text-align: left;
+            box-shadow: var(--shadow);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+        }
+
+        .stat-card h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .stat-card p {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        .ticket-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ticket-list > :nth-child(n) {
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        .ticket-list > :nth-child(1) { animation-delay: 0.3s; }
+        .ticket-list > :nth-child(2) { animation-delay: 0.4s; }
+        .ticket-list > :nth-child(3) { animation-delay: 0.5s; }
+        .ticket-list > :nth-child(4) { animation-delay: 0.6s; }
+        .ticket-list > :nth-child(5) { animation-delay: 0.7s; }
+
+        .ticket-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: start;
+            box-shadow: var(--shadow);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ticket-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-light));
+        }
+
+        .ticket-item:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow), 0 0 20px rgba(0, 102, 204, 0.15);
+        }
+
+        .ticket-info {
+            padding-left: 1rem;
+        }
+
+        .ticket-info h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .ticket-meta {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+
+        .ticket-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticket-message {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 1.25rem;
+            background: rgba(0, 102, 204, 0.05);
+            border-radius: 12px;
+            color: var(--text-main);
+            border: 1px solid var(--accent-light);
+            margin-top: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 140px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff1c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 59, 48, 0.3);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .status-badge {
+            background: #34c759;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-dim);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        <header>
+            <div>
+                <a href="index.html" class="back-link">← Tilbage til siden</a>
+                <h1>★ Staff Panel</h1>
+            </div>
+            <div id="admin-name">Indlæser...</div>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3>Åbne Tickets</h3>
+                <p id="total-tickets">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>I dag</h3>
+                <p id="today-tickets">0</p>
+            </div>
+        </div>
+
+        <div class="ticket-list" id="admin-tickets-list">
+            <!-- Tickets indlæses her -->
+        </div>
+    </div>
+
+    <script>
+        // Sikkerhed: Tjek om brugeren er staff
+        if (localStorage.getItem('isStaff') !== 'true') {
+            alert('Adgang nægtet. Du skal være staff for at se denne side.');
+            window.location.href = 'index.html';
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        document.getElementById('admin-name').textContent = 'Staff Member';
+
+        function getToday() {
+            const today = new Date();
+            return `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+        }
+
+        function loadAdminData() {
+            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            const list = document.getElementById('admin-tickets-list');
+            
+            document.getElementById('total-tickets').textContent = tickets.length;
+            
+            const todayTickets = tickets.filter(t => t.date === getToday()).length;
+            document.getElementById('today-tickets').textContent = todayTickets;
+
+            list.innerHTML = '';
+
+            if (tickets.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>🎉 Ingen aktive tickets. Godt arbejde!</p></div>';
+                return;
+            }
+
+            const sortedTickets = [...tickets].reverse();
+
+            sortedTickets.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'ticket-item';
+                const messagePreview = t.message.substring(0, 80) + (t.message.length > 80 ? '...' : '');
+                div.innerHTML = `
+                    <div class="ticket-info">
+                        <div class="ticket-meta">
+                            <span class="status-badge">ÅBEN</span>
+                            <span><strong>ID:</strong> ${t.id}</span>
+                            <span><strong>Bruger:</strong> ${t.owner || 'Ukendt'}</span>
+                            <span><strong>Dato:</strong> ${t.date}</span>
+                        </div>
+                        <h2>${t.subject}</h2>
+                        <div class="ticket-message">"${messagePreview}"</div>
+                    </div>
+                    <div class="actions">
+                        <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" class="btn btn-view">Åbn Chat</a>
+                        <button onclick="deleteTicket('${t.id}')" class="btn btn-delete">Slet</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function deleteTicket(id) {
+            if (confirm('Er du sikker på at du vil slette denne ticket permanent?')) {
+                const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                const filtered = tickets.filter(t => t.id !== id);
+                localStorage.setItem('userTickets', JSON.stringify(filtered));
+                loadAdminData();
+            }
+        }
+
+        loadAdminData();
+    </script>
+</body>
+</html>
