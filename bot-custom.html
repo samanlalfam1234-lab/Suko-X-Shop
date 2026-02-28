@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Hjemmeside | Suko Shop</title>
+    <title>Custom Discord Bot | Suko Shop</title>
     <style>
         :root {
             --bg: #e1e7ed;
@@ -76,35 +76,13 @@
         h1 { font-size: 40px; font-weight: 600; margin-bottom: 20px; }
         .subtitle { font-size: 18px; color: var(--text-dim); margin-bottom: 60px; }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-
-        .option-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            border: 2px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .option-card.selected { border-color: var(--accent); background: var(--bg); box-shadow: var(--shadow); }
-
         .addons-section {
-            display: none;
             background: var(--card-bg);
             border-radius: 20px;
             padding: 30px;
             margin-top: 30px;
             border: 1px solid var(--border);
         }
-
-        .addons-section.active { display: block; animation: fadeIn 0.4s ease; }
 
         .addon-list { display: flex; flex-direction: column; gap: 15px; }
 
@@ -150,15 +128,6 @@
         .addon-name { font-weight: 600; font-size: 14px; }
         .addon-price { color: var(--accent); font-weight: 600; font-size: 14px; flex-shrink: 0; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .option-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-        .option-price { font-size: 18px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
-        .option-desc { font-size: 14px; color: var(--text-dim); }
-
         .btn {
             background: var(--accent);
             color: white;
@@ -173,6 +142,8 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 14px var(--accent-light);
+            margin-top: 40px;
+            width: 100%;
         }
 
         .btn:hover:not(:disabled) {
@@ -180,7 +151,6 @@
             box-shadow: 0 8px 24px var(--accent-light);
             filter: brightness(1.1);
         }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .back-link { display: block; margin-bottom: 40px; color: var(--text-dim); text-decoration: none; font-size: 14px; }
 
@@ -204,48 +174,28 @@
     <div class="container">
         <a href="pricing.html" class="back-link" data-i18n="back-link">← Tilbage til Store</a>
 
-        <h1 data-i18n="title">Custom Hjemmeside.</h1>
-        <p class="subtitle" data-i18n="subtitle">Vælg din type og beskriv dine ønsker. Startpris: 20 kr. / 3 USD + 5 kr. / 1 USD pr. funktion.</p>
+        <h1 data-i18n="title">Custom Discord Bot.</h1>
+        <p class="subtitle" data-i18n="subtitle">Skræddersy din egen Discord-bot. Startpris: 45 kr. / 6 USD.</p>
 
-        <div class="options-grid" id="type-options">
-            <div class="option-card" id="card-fivem" onclick="selectType('fivem', this)">
-                <div class="option-title" data-i18n="fivem-title">FiveM Hjemmeside</div>
-                <div class="option-price">20 DKK / 3 USD</div>
-                <div class="option-desc" data-i18n="fivem-desc">En professionel hjemmeside til din FiveM-server.</div>
-            </div>
-
-            <div class="option-card" id="card-other" onclick="selectType('other', this)">
-                <div class="option-title" data-i18n="other-title">Andet</div>
-                <div class="option-price">45 DKK / 6 USD</div>
-                <div class="option-desc" data-i18n="other-desc">Din egen ide - beskriv hvad du ønsker!</div>
-            </div>
-        </div>
-
-        <!-- Website Addons Section -->
-        <div class="addons-section" id="addons-website">
-            <h3 style="margin-bottom: 20px;" data-i18n="addons-title">Vælg dine tilvalg (+5 kr. / 1 USD hver):</h3>
+        <div class="addons-section">
+            <h3 style="margin-bottom: 20px;" data-i18n="addons-title">Vælg dine bot-funktioner:</h3>
             <div class="addon-list">
-                <div class="addon-item" onclick="toggleAddon('leaderboard', this)">
+                <div class="addon-item" onclick="toggleAddon('bot-ticket', this)">
                     <div class="checkbox"></div>
-                    <div class="addon-label"><div class="addon-name" data-i18n="addon-leaderboard">Leaderboard</div></div>
+                    <div class="addon-label"><div class="addon-name" data-i18n="bot-ticket">Ticket System</div></div>
+                    <div class="addon-price">+10 DKK / 1 USD</div>
+                </div>
+                <div class="addon-item" onclick="toggleAddon('bot-welcome', this)">
+                    <div class="checkbox"></div>
+                    <div class="addon-label"><div class="addon-name" data-i18n="bot-welcome">Velkomstbesked</div></div>
                     <div class="addon-price">+5 DKK / 1 USD</div>
                 </div>
-                <div class="addon-item" onclick="toggleAddon('apply', this)">
+                <div class="addon-item" onclick="toggleAddon('bot-commands', this)">
                     <div class="checkbox"></div>
-                    <div class="addon-label"><div class="addon-name" data-i18n="addon-apply">Ansøgningssystem</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-label"><div class="addon-name" data-i18n="bot-commands">Custom Commands</div></div>
+                    <div class="addon-price">+15 DKK / 2 USD</div>
                 </div>
-                <div class="addon-item" onclick="toggleAddon('whitelist', this)">
-                    <div class="checkbox"></div>
-                    <div class="addon-label"><div class="addon-name" data-i18n="addon-whitelist">Whitelist</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
-                </div>
-                <div class="addon-item" onclick="toggleAddon('admin', this)">
-                    <div class="checkbox"></div>
-                    <div class="addon-label"><div class="addon-name" data-i18n="addon-admin">Admin Panel</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
-                </div>
-                <div class="addon-item" onclick="toggleAddon('wishes', this)">
+                <div class="addon-item" onclick="toggleAddon('bot-wishes', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-wishes">Dine ønsker/du kan skrive dine ønsker på næste side</div></div>
                     <div class="addon-price">+0 DKK / 0 USD</div>
@@ -253,7 +203,7 @@
             </div>
         </div>
 
-        <button class="btn" onclick="submitCustom()" id="submit-btn" data-i18n="submit-btn">Fortsæt til bestilling (20 DKK / 3 USD)</button>
+        <button class="btn" onclick="submitBot()" id="submit-btn" data-i18n="submit-btn">Fortsæt til bestilling (45 DKK / 6 USD)</button>
     </div>
 
     <footer>
@@ -264,39 +214,27 @@
         const translations = {
             'en': {
                 'back-link': '← Back to Store',
-                'title': 'Custom Solution.',
-                'subtitle': 'Choose your type and describe your wishes.',
-                'fivem-title': 'FiveM Website',
-                'fivem-desc': 'A professional website for your FiveM server.',
-                'other-title': 'Other',
-                'other-desc': 'Your own idea - describe what you want!',
-                'addons-title': 'Choose your add-ons (+5 DKK / 1 USD each):',
-                'addon-leaderboard': 'Leaderboard',
-                'addon-apply': 'Application System',
-                'addon-whitelist': 'Whitelist',
-                'addon-admin': 'Admin Panel',
+                'title': 'Custom Discord Bot.',
+                'subtitle': 'Customize your own Discord bot. Base price: 45 DKK / 6 USD.',
+                'addons-title': 'Choose your bot features:',
+                'bot-ticket': 'Ticket System',
+                'bot-welcome': 'Welcome Message',
+                'bot-commands': 'Custom Commands',
                 'addon-wishes': 'Your wishes / you can write your wishes on the next page',
                 'submit-btn': 'Continue to order',
-                'footer-copy': '© 2026 Suko Shop. All rights reserved.',
-                'alert-type': 'Please select a type.'
+                'footer-copy': '© 2026 Suko Shop. All rights reserved.'
             },
             'da': {
                 'back-link': '← Tilbage til Store',
-                'title': 'Custom Løsning.',
-                'subtitle': 'Vælg din type og beskriv dine ønsker.',
-                'fivem-title': 'FiveM Hjemmeside',
-                'fivem-desc': 'En professionel hjemmeside til din FiveM-server.',
-                'other-title': 'Andet',
-                'other-desc': 'Din egen ide - beskriv hvad du ønsker!',
-                'addons-title': 'Vælg dine tilvalg (+5 kr. / 1 USD hver):',
-                'addon-leaderboard': 'Leaderboard',
-                'addon-apply': 'Ansøgningssystem',
-                'addon-whitelist': 'Whitelist',
-                'addon-admin': 'Admin Panel',
+                'title': 'Custom Discord Bot.',
+                'subtitle': 'Skræddersy din egen Discord-bot. Startpris: 45 kr. / 6 USD.',
+                'addons-title': 'Vælg dine bot-funktioner:',
+                'bot-ticket': 'Ticket System',
+                'bot-welcome': 'Velkomstbesked',
+                'bot-commands': 'Custom Commands',
                 'addon-wishes': 'Dine ønsker/du kan skrive dine ønsker på næste side',
                 'submit-btn': 'Fortsæt til bestilling',
-                'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.',
-                'alert-type': 'Vælg venligst en type.'
+                'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.'
             }
         };
 
@@ -308,7 +246,7 @@
                     el.innerHTML = translations[lang][key];
                 }
             });
-            updatePrice(); // Refresh button text
+            updatePrice();
         }
 
         const currentTheme = localStorage.getItem('theme');
@@ -319,13 +257,11 @@
 
         const savedLang = localStorage.getItem('language') || 'en';
         
-        let selectedType = '';
         let selectedAddons = {
-            leaderboard: false,
-            apply: false,
-            whitelist: false,
-            admin: false,
-            wishes: false
+            'bot-ticket': false,
+            'bot-welcome': false,
+            'bot-commands': false,
+            'bot-wishes': false
         };
 
         updateLanguage(savedLang);
@@ -342,25 +278,6 @@
             adminLink.style.display = 'inline-block';
         }
 
-        function selectType(type, element) {
-            selectedType = type;
-            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            
-            const addonsWebsite = document.getElementById('addons-website');
-            addonsWebsite.classList.remove('active');
-            
-            if (type === 'fivem') {
-                addonsWebsite.classList.add('active');
-            }
-            
-            // Reset addons when changing type
-            selectedAddons = { leaderboard: false, apply: false, whitelist: false, admin: false, wishes: false };
-            document.querySelectorAll('.addon-item').forEach(item => item.classList.remove('selected'));
-            
-            updatePrice();
-        }
-
         function toggleAddon(addon, element) {
             selectedAddons[addon] = !selectedAddons[addon];
             element.classList.toggle('selected');
@@ -369,49 +286,32 @@
 
         function updatePrice() {
             const currentLang = localStorage.getItem('language') || 'en';
-            let totalPrice = 20;
+            let totalPrice = 45;
             
-            if (selectedType === 'other') {
-                totalPrice = 45;
-            } else if (selectedType === 'fivem') {
-                totalPrice = 20;
-                const addonCount = ['leaderboard', 'apply', 'whitelist', 'admin'].filter(a => selectedAddons[a]).length;
-                totalPrice += (addonCount * 5);
-                // wishes is free (+0)
-            }
+            if (selectedAddons['bot-ticket']) totalPrice += 10;
+            if (selectedAddons['bot-welcome']) totalPrice += 5;
+            if (selectedAddons['bot-commands']) totalPrice += 15;
+            if (selectedAddons['bot-wishes']) totalPrice += 0;
             
             const totalUSD = Math.round(totalPrice / 7);
             const btnText = translations[currentLang]['submit-btn'];
             document.getElementById('submit-btn').textContent = btnText + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
         }
 
-        function submitCustom() {
+        function submitBot() {
             const currentLang = localStorage.getItem('language') || 'en';
-            if (!selectedType) {
-                alert(translations[currentLang]['alert-type']);
-                return;
-            }
             
             let addonsList = [];
-            let totalPrice = 20;
-            let typeDisplay = '';
+            let totalPrice = 45;
 
-            if (selectedType === 'other') {
-                totalPrice = 45;
-                typeDisplay = 'Other';
-            } else {
-                totalPrice = 20;
-                typeDisplay = 'FiveM Website';
-                if (selectedAddons.leaderboard) { addonsList.push('Leaderboard'); totalPrice += 5; }
-                if (selectedAddons.apply) { addonsList.push('Ansøgningssystem'); totalPrice += 5; }
-                if (selectedAddons.whitelist) { addonsList.push('Whitelist'); totalPrice += 5; }
-                if (selectedAddons.admin) { addonsList.push('Admin Panel'); totalPrice += 5; }
-                if (selectedAddons.wishes) { addonsList.push('Dine ønsker (Gratis)'); }
-            }
+            if (selectedAddons['bot-ticket']) { addonsList.push('Ticket System (+10 kr)'); totalPrice += 10; }
+            if (selectedAddons['bot-welcome']) { addonsList.push('Velkomstbesked (+5 kr)'); totalPrice += 5; }
+            if (selectedAddons['bot-commands']) { addonsList.push('Custom Commands (+15 kr)'); totalPrice += 15; }
+            if (selectedAddons['bot-wishes']) { addonsList.push('Specielle ønsker (Gratis)'); }
             
             const totalUSD = Math.round(totalPrice / 7);
             const addonsDisplay = addonsList.length > 0 ? ' + ' + addonsList.join(', ') : '';
-            const finalChoice = 'Custom (' + typeDisplay + ')' + addonsDisplay + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
+            const finalChoice = 'Discord Bot' + addonsDisplay + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
             localStorage.setItem('pendingOrder', finalChoice);
             window.location.href = 'tickets.html';
         }

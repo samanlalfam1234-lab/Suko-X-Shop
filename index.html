@@ -6,28 +6,28 @@
     <title>Suko Shop | Markedsplads for digitale aktiver</title>
     <style>
         :root {
-            --bg: #fafbfc;
-            --card-bg: #f0f4f9;
-            --text-main: #1a1a1a;
-            --text-dim: #6c757d;
-            --border: #d2d2d7;
-            --accent: #0066cc;
-            --accent-light: #e6f0ff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #ffffff;
+            --card-bg: #f8fbff;
+            --text-main: #000000;
+            --text-dim: #4b5563;
+            --border: rgba(0, 0, 0, 0.1);
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
         }
 
         /* Dark Theme Variables */
         body.dark-theme {
-            --bg: #0f1419;
-            --card-bg: #1a1f2e;
-            --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
-            --border: #2d3748;
-            --accent: #4d94ff;
-            --accent-light: rgba(77, 148, 255, 0.1);
-            --shadow: 0 10px 30px rgba(0,0,0,0.2);
-            background: linear-gradient(-45deg, #0f1419, #1a1f2e, #0a0d12, #1a1f2e);
+            --bg: #0a0e14;
+            --card-bg: #111821;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #1f2937;
+            --accent: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
+            background: linear-gradient(-45deg, #0a0e14, #111821, #05080c, #111821);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
@@ -52,7 +52,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(-45deg, #f8f9fa, #ffffff, #e9ecef, #f8f9fa);
+            background: linear-gradient(-45deg, #e1e7ed, #f0f4f8, #dbe4ee, #e1e7ed);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: var(--text-main);
@@ -79,6 +79,21 @@
             font-weight: 800;
             letter-spacing: -0.03em;
             text-transform: uppercase;
+        }
+
+        /* 3D Logo Styling */
+        .logo-3d {
+            filter: drop-shadow(1px 1px 0px rgba(59, 130, 246, 0.8)) 
+                    drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.6))
+                    drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.4));
+            transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.9))
+                    drop-shadow(4px 4px 12px rgba(59, 130, 246, 0.5));
         }
 
         nav {
@@ -114,6 +129,10 @@
         .staff-btn {
             border-color: rgba(204, 0, 0, 0.3) !important;
             color: #cc0000 !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            padding: 0.6rem 1rem !important;
+            border-radius: 10px !important;
         }
 
         .staff-btn:hover {
@@ -208,12 +227,84 @@
         }
 
         footer {
-            padding: 6rem 5%;
+            padding: 6rem 5% 4rem;
             text-align: center;
             color: var(--text-dim);
             font-size: 0.9rem;
             border-top: 1px solid var(--border);
             background: var(--card-bg);
+        }
+
+        .partners {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: transparent;
+            display: inline-block;
+        }
+
+        .partners h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .partner-list {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .partner-item {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            animation: partnerGlow 3s ease-in-out infinite;
+            display: inline-block;
+            position: relative;
+        }
+
+        @keyframes partnerGlow {
+            0%, 100% { 
+                opacity: 0.6;
+                transform: scale(1);
+                filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5));
+                color: var(--accent);
+            }
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            opacity: 0.5;
+            font-size: 0.8rem;
+            margin-top: 4rem;
         }
 
         /* Popup Overlay Improvements */
@@ -284,64 +375,129 @@
 <body>
 
     <header>
-        <div class="logo">Suko Shop</div>
+        <!-- ÆNDRE LOGO HER -->
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+            <div class="logo">Suko Shop</div>
+        </a>
         <nav id="nav-menu">
-            <a href="pricing.html">Store</a>
-            <a href="tos.html">Regler</a>
-            <a href="login.html" id="login-link">Log ind</a>
-            <a href="profile.html" id="account-link" style="display: none;">Konto</a>
-            <a href="#" id="logout-link" class="logout-nav-btn" style="display: none;">Log ud</a>
+            <a href="pricing.html" data-i18n="nav-store">Store</a>
+            <a href="tos.html" data-i18n="nav-rules">Regler</a>
+            <a href="login.html" id="login-link" data-i18n="nav-login">Log ind</a>
+            <a href="profile.html" id="account-link" style="display: none;" data-i18n="nav-account">Konto</a>
+            <a href="#" id="logout-link" class="logout-nav-btn" style="display: none;" data-i18n="nav-logout">Log ud</a>
         </nav>
     </header>
-
-    <audio id="bg-music" loop>
-        <source src="https://orangefreesounds.com/wp-content/uploads/2015/01/Rain-sound-loop.mp3" type="audio/mpeg">
-    </audio>
 
     <!-- Login Popup Overlay -->
     <div id="login-popup-overlay">
         <div class="popup-content">
-            <h2>Log venligst ind</h2>
-            <p>Du skal være logget ind for at få adgang til Suko Shop.</p>
-            <a href="login.html" class="popup-btn">Gå til log ind</a>
+            <h2 data-i18n="popup-title">Log venligst ind</h2>
+            <p data-i18n="popup-text">Du skal være logget ind for at få adgang til Suko Shop.</p>
+            <a href="login.html" class="popup-btn" data-i18n="popup-btn">Gå til log ind</a>
         </div>
     </div>
 
     <main>
         <section class="hero">
-            <h1>Velkommen til <br> Suko Shop</h1>
+            <h1 data-i18n="hero-title">Velkommen til <br> Suko Shop</h1>
         </section>
 
         <section class="features">
             <div class="feature-item">
-                <h3>Verificerede Data</h3>
-                <p>Vi tjekker altid Google Analytics og bankudskrifter, før en side bliver sat til salg hos os.</p>
+                <h3 data-i18n="feat1-title">Verificerede Data</h3>
+                <p data-i18n="feat1-text">Vi tjekker altid Google Analytics og bankudskrifter, før en side bliver sat til salg hos os.</p>
             </div>
             <div class="feature-item">
-                <h3>Sikker Handel</h3>
-                <p>Vores escrow-løsning sikrer, at pengene først frigives, når ejerskabet er 100% overdraget.</p>
+                <h3 data-i18n="feat2-title">Sikker Handel</h3>
+                <p data-i18n="feat2-text">Vores escrow-løsning sikrer, at pengene først frigives, når ejerskabet er 100% overdraget.</p>
             </div>
             <div class="feature-item">
-                <h3>Hurtig Overførsel</h3>
-                <p>Vi hjælper med alt det tekniske omkring flytning af domæne og hosting-aftaler.</p>
+                <h3 data-i18n="feat3-title">Hurtig Overførsel</h3>
+                <p data-i18n="feat3-text">Vi hjælper med alt det tekniske omkring flytning af domæne og hosting-aftaler.</p>
             </div>
         </section>
     </main>
 
     <footer>
-        <button id="music-toggle" style="background: transparent; border: 1px solid var(--border); padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; color: var(--text-main); font-weight: 600; font-size: 0.7rem; display: flex; align-items: center; gap: 4px; margin: 0 auto 1.5rem;">
-            <span>🎵</span> <span id="music-status">Musik: Fra</span>
-        </button>
-        <p style="margin-bottom: 1rem;"><a href="https://discord.gg/prZgFSEYBZ" target="_blank" style="color: var(--text-main); font-weight: 700; text-decoration: underline;">Join discorden!</a></p>
-        <p>&copy; 2026 Suko Shop. Alle rettigheder forbeholdes. København, Danmark.</p>
+        <div class="footer-links">
+            <a href="https://discord.gg/prZgFSEYBZ" target="_blank" class="footer-link" data-i18n="join-discord">Join discorden!</a>
+        </div>
+        
+        <div class="partners">
+            <h3 data-i18n="partners-title">Vores Partnere</h3>
+            <div class="partner-list">
+                <span class="partner-item">evolutionRP</span>
+            </div>
+        </div>
+
+        <p class="copyright" data-i18n="footer-copy">&copy; 2026 Suko Shop. Alle rettigheder forbeholdes.</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Musik Toggle logik
-        const musicToggle = document.getElementById('music-toggle');
-        const musicStatus = document.getElementById('music-status');
-        const bgMusic = document.getElementById('bg-music');
-        
+        // Supabase configuration - ERSTAT MED DINE EGNE OPLYSNINGER
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const translations = {
+            'en': {
+                'nav-store': 'Store',
+                'nav-rules': 'Rules',
+                'nav-login': 'Log In',
+                'nav-account': 'Account',
+                'nav-logout': 'Log Out',
+                'popup-title': 'Please Log In',
+                'popup-text': 'You must be logged in to access Suko Shop.',
+                'popup-btn': 'Go to Log In',
+                'hero-title': 'Welcome to <br> Suko Shop',
+                'feat1-title': 'Verified Data',
+                'feat1-text': 'We always check Google Analytics and bank statements before a site is put up for sale with us.',
+                'feat2-title': 'Secure Trade',
+                'feat2-text': 'Our escrow solution ensures that money is only released when ownership is 100% transferred.',
+                'feat3-title': 'Fast Transfer',
+                'feat3-text': 'We help with all the technical aspects of moving domain and hosting agreements.',
+                'music-on': 'Music: On',
+                'music-off': 'Music: Off',
+                'join-discord': 'Join the Discord!',
+                'partners-title': 'Our Partners',
+                'footer-copy': '© 2026 Suko Shop. All rights reserved. Copenhagen, Denmark.'
+            },
+            'da': {
+                'nav-store': 'Store',
+                'nav-rules': 'Regler',
+                'nav-login': 'Log ind',
+                'nav-account': 'Konto',
+                'nav-logout': 'Log ud',
+                'popup-title': 'Log venligst ind',
+                'popup-text': 'Du skal være logget ind for at få adgang til Suko Shop.',
+                'popup-btn': 'Gå til log ind',
+                'hero-title': 'Velkommen til <br> Suko Shop',
+                'feat1-title': 'Verificerede Data',
+                'feat1-text': 'Vi tjekker altid Google Analytics og bankudskrifter, før en side bliver sat til salg hos os.',
+                'feat2-title': 'Sikker Handel',
+                'feat2-text': 'Vores escrow-løsning sikrer, at pengene først frigives, når ejerskabet er 100% overdraget.',
+                'feat3-title': 'Hurtig Overførsel',
+                'feat3-text': 'Vi hjælper med alt det tekniske omkring flytning af domæne og hosting-aftaler.',
+                'music-on': 'Musik: Til',
+                'music-off': 'Musik: Fra',
+                'join-discord': 'Join discorden!',
+                'partners-title': 'Vores Partnere',
+                'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes. København, Danmark.'
+            }
+        };
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+        }
+
         // Regn effekt logik
         function createRain() {
             const drop = document.createElement('div');
@@ -358,59 +514,80 @@
 
         setInterval(createRain, 50);
 
-        // Sæt volumen lidt ned så det er "stille"
-        bgMusic.volume = 0.2;
-
-        musicToggle.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicStatus.textContent = 'Musik: Til';
-                musicToggle.style.borderColor = 'var(--accent)';
-            } else {
-                bgMusic.pause();
-                musicStatus.textContent = 'Musik: Fra';
-                musicToggle.style.borderColor = 'var(--border)';
-            }
-        });
-
-        // Tjek tema fra localStorage med det samme
-        if (localStorage.getItem('theme') === 'dark') {
+        // Tjek tema fra localStorage med det samme - default til mørk
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || !currentTheme) {
             document.body.classList.add('dark-theme');
+            if (!currentTheme) localStorage.setItem('theme', 'dark');
         }
 
-        // Tjek om brugeren er logget ind
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        const navMenu = document.getElementById('nav-menu');
-        const loginLink = document.getElementById('login-link');
-        const accountLink = document.getElementById('account-link');
-        const logoutLink = document.getElementById('logout-link');
-        const loginPopup = document.getElementById('login-popup-overlay');
+        // Tjek sprog fra localStorage med det samme
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
 
-        if (isLoggedIn) {
-            loginLink.style.display = 'none';
-            accountLink.style.display = 'flex';
-            logoutLink.style.display = 'flex';
-            loginPopup.style.display = 'none';
-            
-            const isStaff = localStorage.getItem('isStaff') === 'true';
-            
-            if (isStaff) {
-                const adminBtn = document.createElement('a');
-                adminBtn.href = 'admin.html';
-                adminBtn.className = 'staff-btn';
-                adminBtn.innerHTML = '★ Staff Panel';
-                navMenu.insertBefore(adminBtn, accountLink);
+        // Supabase session check
+        async function checkSupabaseSession() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const navMenu = document.getElementById('nav-menu');
+            const loginLink = document.getElementById('login-link');
+            const accountLink = document.getElementById('account-link');
+            const logoutLink = document.getElementById('logout-link');
+            const loginPopup = document.getElementById('login-popup-overlay');
+
+            // Liste over Discord IDs der har Staff adgang
+            const staffIds = [
+                '1082667160461127720',
+                '1231963657047375937',
+                '1192535733987184680',
+                '727130234125680641',
+                '776463695299346442'
+            ];
+
+            if (session && session.user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', session.user.email);
+                localStorage.setItem('userName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+
+                // Tjek om brugeren logger ind med Discord og har et staff ID
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                }
             }
 
-            logoutLink.onclick = (e) => {
-                e.preventDefault();
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('isStaff');
-                location.reload();
-            };
-        } else {
-            loginPopup.style.display = 'flex';
+            const isStaff = localStorage.getItem('isStaff') === 'true';
+
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                loginLink.style.display = 'none';
+                accountLink.style.display = 'flex';
+                const lang = localStorage.getItem('language') || 'en';
+                accountLink.textContent = translations[lang]['nav-account'];
+                logoutLink.style.display = 'flex';
+                loginPopup.style.display = 'none';
+
+                if (isStaff && !document.querySelector('.staff-btn')) {
+                    const adminBtn = document.createElement('a');
+                    adminBtn.href = 'admin.html';
+                    adminBtn.className = 'staff-btn';
+                    adminBtn.textContent = 'Staff Panel';
+                    navMenu.appendChild(adminBtn);
+                }
+
+                logoutLink.onclick = async (e) => {
+                    e.preventDefault();
+                    await supabaseClient.auth.signOut();
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('isStaff');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                    location.reload();
+                };
+            } else {
+                loginPopup.style.display = 'flex';
+            }
         }
+
+        checkSupabaseSession();
     </script>
 </body>
 </html>

@@ -6,23 +6,26 @@
     <title>Opret konto | Suko Shop</title>
     <style>
         :root {
-            --bg: #fafbfc;
-            --card-bg: #f0f4f9;
-            --text-main: #1a1a1a;
-            --text-dim: #6c757d;
-            --border: #d2d2d7;
-            --accent: #0066cc;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #ffffff;
+            --card-bg: #f8fbff;
+            --text-main: #000000;
+            --text-dim: #4b5563;
+            --border: #d0d7de;
+            --accent: #0969da;
+            --accent-light: rgba(9, 105, 218, 0.05);
+            --shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+            --transition: all 0.2s ease;
         }
 
         body.dark-theme {
-            --bg: #0f1419;
-            --card-bg: #1a1f2e;
-            --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
-            --border: #2d3748;
-            --accent: #4d94ff;
+            --bg: #0a0e14;
+            --card-bg: #111821;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #1f2937;
+            --accent: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         @keyframes fadeIn {
@@ -72,6 +75,20 @@
             color: var(--text-main);
         }
 
+        .logo-3d {
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.8)) 
+                    drop-shadow(4px 4px 0px rgba(59, 130, 246, 0.6))
+                    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.4));
+            transform: perspective(1000px) rotateX(10deg) rotateY(-10deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.9))
+                    drop-shadow(4px 4px 16px rgba(59, 130, 246, 0.5));
+        }
+
         h1 {
             font-size: 1.75rem;
             font-weight: 900;
@@ -82,12 +99,12 @@
         p {
             color: var(--text-dim);
             font-size: 1rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
         }
 
         .form-group {
             text-align: left;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
         }
 
         label {
@@ -105,6 +122,7 @@
             padding: 1rem 1.25rem;
             border: 1px solid var(--border);
             background: var(--bg);
+            color: var(--text-main);
             font-size: 1rem;
             outline: none;
             border-radius: 12px;
@@ -119,22 +137,57 @@
         .btn {
             width: 100%;
             background: var(--accent);
-            color: var(--bg);
+            color: white;
             padding: 1.1rem;
             border: none;
-            font-weight: 800;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             margin-top: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px var(--accent-light);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px var(--accent-light);
+            filter: brightness(1.1);
         }
+
+        .btn-discord {
+            background: #5865F2;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-discord:hover {
+            box-shadow: 0 8px 24px rgba(88, 101, 242, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider:not(:empty)::before { margin-right: 1.5rem; }
+        .divider:not(:empty)::after { margin-left: 1.5rem; }
 
         .back-link {
             display: block;
@@ -153,53 +206,154 @@
 <body>
 
     <div class="login-container">
-        <a href="index.html" class="logo">Suko Shop</a>
-        <h1>Opret konto</h1>
-        <p>Start din rejse som digital investor i dag.</p>
+        <!-- ÆNDRE LOGO HER -->
+        <a href="index.html" class="logo" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover;">
+            <span>Suko Shop</span>
+        </a>
+        <h1 data-i18n="create-account">Opret konto</h1>
+        <p data-i18n="register-desc">Begynd din rejse med Suko Shop i dag.</p>
 
         <form id="registerForm">
             <div class="form-group">
-                <label for="name">Fulde navn</label>
-                <input type="text" id="name" placeholder="Fornavn Efternavn" required>
+                <label for="username" data-i18n="username-label">Brugernavn</label>
+                <input type="text" id="username" placeholder="johndoe" required>
             </div>
             <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" placeholder="navn@eksempel.dk" required>
+                <label for="email" data-i18n="email">E-mail</label>
+                <input type="email" id="email" placeholder="name@example.com" required>
             </div>
             <div class="form-group">
-                <label for="password">Adgangskode</label>
-                <input type="password" id="password" placeholder="Min. 8 tegn" minlength="8" required>
+                <label for="password" data-i18n="password">Adgangskode</label>
+                <input type="password" id="password" placeholder="••••••••" minlength="8" required>
             </div>
-            <button type="submit" class="btn">Opret konto</button>
+            <button type="submit" class="btn" data-i18n="register-btn">Opret konto</button>
         </form>
 
-        <script>
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('name').value;
-                const password = document.getElementById('password').value;
+        <div class="divider">or</div>
 
-                if (password.length < 8) {
-                    alert('Adgangskoden skal være mindst 8 tegn lang.');
+        <button type="button" class="btn btn-discord" id="discordLogin">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.197.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+            <span data-i18n="login-discord">Login with Discord</span>
+        </button>
+
+        <a href="login.html" class="back-link" style="margin-top: 1rem;" data-i18n="has-account">Har du allerede en konto? Log ind</a>
+        <a href="index.html" class="back-link" data-i18n="back-home">← Tilbage til forsiden</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase configuration - ERSTAT MED DINE EGNE OPLYSNINGER
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const translations = {
+            'en': {
+                'create-account': 'Create Account',
+                'register-desc': 'Start your journey with Suko Shop today.',
+                'username-label': 'Username',
+                'email': 'E-mail',
+                'password': 'Password',
+                'register-btn': 'Create Account',
+                'has-account': 'Already have an account? Log in',
+                'back-home': '← Back to home',
+                'creating': 'Creating account...',
+                'reg-success': 'Account created successfully!',
+                'pass-length': 'The password must be at least 8 characters long.',
+                'user-placeholder': 'johndoe',
+                'email-placeholder': 'name@example.com',
+                'login-discord': 'Login with Discord'
+            },
+            'da': {
+                'create-account': 'Opret konto',
+                'register-desc': 'Begynd din rejse med Suko Shop i dag.',
+                'username-label': 'Brugernavn',
+                'email': 'E-mail',
+                'password': 'Adgangskode',
+                'register-btn': 'Opret konto',
+                'has-account': 'Har du allerede en konto? Log ind',
+                'back-home': '← Tilbage til forsiden',
+                'creating': 'Opretter konto...',
+                'reg-success': 'Konto oprettet succesfuldt!',
+                'pass-length': 'Adgangskoden skal være mindst 8 tegn lang.',
+                'user-placeholder': 'johndoe',
+                'email-placeholder': 'navn@eksempel.dk',
+                'login-discord': 'Log ind med Discord'
+            }
+        };
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            document.getElementById('username').placeholder = translations[lang]['user-placeholder'];
+            document.getElementById('email').placeholder = translations[lang]['email-placeholder'];
+        }
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || !currentTheme) {
+            document.body.classList.add('dark-theme');
+            if (!currentTheme) localStorage.setItem('theme', 'dark');
+        }
+
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
+
+        document.getElementById('discordLogin').addEventListener('click', async () => {
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'discord',
+                options: {
+                    redirectTo: window.location.href.split('register.html')[0] + 'index.html'
+                }
+            });
+            if (error) alert(error.message);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const currentLang = localStorage.getItem('language') || 'en';
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const btn = this.querySelector('.btn');
+            const originalBtnText = btn.textContent;
+            btn.textContent = translations[currentLang]['creating'];
+            btn.disabled = true;
+
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: username
+                        }
+                    }
+                });
+
+                if (error) {
+                    alert(error.message);
+                    btn.textContent = originalBtnText;
+                    btn.disabled = false;
                     return;
                 }
 
-                const btn = this.querySelector('.btn');
-                btn.textContent = 'Opretter konto...';
-                btn.disabled = true;
-
-                setTimeout(() => {
-                    localStorage.setItem('userName', name);
-                    localStorage.setItem('userEmail', document.getElementById('email').value);
-                    alert('Konto oprettet! Du kan nu logge ind.');
+                if (data.user) {
                     window.location.href = 'login.html';
-                }, 1000);
-            });
-        </script>
-
-        <a href="login.html" class="back-link" style="margin-top: 1rem;">Har du allerede en konto? Log ind</a>
-        <a href="index.html" class="back-link">← Tilbage til forsiden</a>
-    </div>
-
+                }
+            } catch (err) {
+                console.error('Supabase registration error:', err);
+                alert('Der skete en fejl under oprettelse.');
+                btn.textContent = originalBtnText;
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

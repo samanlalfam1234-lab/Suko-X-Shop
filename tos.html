@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service | Suko Shop</title>
+    <title>Terms of Service & Regler | Suko Shop</title>
     <style>
         :root {
-            --bg: #fafbfc;
-            --card-bg: #f0f4f9;
-            --text-main: #1a1a1a;
-            --text-dim: #6c757d;
-            --border: #d2d2d7;
-            --accent: #0066cc;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --bg: #e1e7ed;
+            --card-bg: #f8fbff;
+            --text-main: #24292f;
+            --text-dim: #57606a;
+            --border: #d0d7de;
+            --accent: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-theme {
-            --bg: #0f1419;
-            --card-bg: #1a1f2e;
-            --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
-            --border: #2d3748;
-            --accent: #4d94ff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            --bg: #0a0e14;
+            --card-bg: #111821;
+            --text-main: #e0e6ed;
+            --text-dim: #8492a6;
+            --border: #1f2937;
+            --accent: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         body {
@@ -35,19 +37,33 @@
             padding: 40px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
         }
 
         .container {
             background: var(--card-bg);
-            padding: 3rem;
-            border-radius: 16px;
+            padding: 3.5rem;
+            border-radius: 20px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             animation: fadeIn 0.6s ease-out;
+        }
+
+        /* 3D Logo Styling */
+        .logo-3d {
+            filter: drop-shadow(1px 1px 0px rgba(59, 130, 246, 0.8)) 
+                    drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.6))
+                    drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.4));
+            transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.9))
+                    drop-shadow(4px 4px 12px rgba(59, 130, 246, 0.5));
         }
 
         @keyframes fadeIn {
@@ -56,85 +72,246 @@
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 900;
-            margin-bottom: 2rem;
-            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.04em;
             text-transform: uppercase;
             text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            display: inline-block;
+            width: 100%;
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        li {
-            padding-left: 1.5rem;
-            position: relative;
-            font-weight: 500;
-        }
-
-        li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
             color: var(--accent);
-            font-weight: bold;
+            letter-spacing: -0.02em;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .rule-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .rule-text {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .agreement {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            margin-top: 2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .warning {
             color: #ff4444;
             font-weight: 800;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             text-align: center;
-            padding: 1rem;
-            border: 2px solid #ff4444;
-            border-radius: 8px;
+            padding: 1.2rem;
+            border: 2px dashed #ff4444;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .back-btn {
             display: block;
-            margin: 2rem auto 0;
-            padding: 0.8rem 2rem;
+            margin: 3rem auto 0;
+            padding: 1rem 2.5rem;
             background: var(--accent);
-            color: var(--bg);
+            color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 980px;
             font-weight: 700;
             text-align: center;
             width: fit-content;
             transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
         .back-btn:hover {
             transform: translateY(-2px);
-            opacity: 0.9;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            filter: brightness(1.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Terms of Service</h1>
-        <ul>
-            <li>Alt du køber herinde i shoppen må hverken deles eller sælges videre.</li>
-            <li>Skal tøjet ind på en server så må det selvfølgelig gerne sendes til serveren.</li>
-            <li>Ingen refunderinger.</li>
-            <li>Du må ikke "claime" vores arbejder som dit eget.</li>
-        </ul>
-        <div class="warning">
-            BLIVER DISSE REGLER IKKE OVERHOLDT VIL DU BLIVE STRAFFET.
+        <!-- ÆNDRE LOGO HER -->
+        <a href="index.html" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; text-decoration: none; margin-bottom: 2rem;">
+            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 70px; height: 70px; border-radius: 14px;">
+        </a>
+        <h1 data-i18n="page-title">Terms & Rules</h1>
+
+        <!-- Terms of Service Section -->
+        <div class="section">
+            <h2 data-i18n="tos-header">TERMS OF SERVICE</h2>
+            
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="tos-21-title">2.1 Ingen refunderinger</span>
+                <p class="rule-text" data-i18n="tos-21-text">Da det er digitale produkter, gives der ingen refundering, medmindre fejlen er på vores side teknisk.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="tos-22-title">2.2 Brugsret</span>
+                <p class="rule-text" data-i18n="tos-22-text">Du må kun bruge de leverede til eget forbrug, og de må ikke sælges videre på nogle måde.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="tos-23-title">2.3 Levering</span>
+                <p class="rule-text" data-i18n="tos-23-text">Lige så snart at du har betalt går vi i gang med at lave dit tøj og så derefter modtager du det.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="tos-24-title">2.4 Ændringer</span>
+                <p class="rule-text" data-i18n="tos-24-text">Små ændringer i farver eller lignende er sådan set gratis. Større ændringer koster dog ekstra.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="tos-25-title">2.5 Ophavsret</span>
+                <p class="rule-text" data-i18n="tos-25-text">Dette produkt må ikke ændres i samt sælges videre eller laves om i og bruges til eget forbrug til fx. Videre salg</p>
+            </div>
+
+            <div class="agreement" data-i18n="tos-agreement">
+                Ved at bestille accepterer du automatisk disse betingelser.
+            </div>
         </div>
-        <a href="index.html" class="back-btn">Tilbage til forsiden</a>
+
+        <!-- HER KAN DU ÆNDRE DINE REGLER (RULES) -->
+        <div class="section">
+            <h2 data-i18n="rules-header">REGLER</h2>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="rule-11-title">1.1 Respektér alle medlemmer</span>
+                <p class="rule-text" data-i18n="rule-11-text">Ingen diskrimination, had eller chikane</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="rule-12-title">1.2 Ingen spam eller reklame</span>
+                <p class="rule-text" data-i18n="rule-12-text">Du må ikke reklamere for egne produkter eller servers uden tilladelse.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="rule-13-title">1.3 Hold dig til emnet i hver kanal</span>
+                <p class="rule-text" data-i18n="rule-13-text">Brug fx kun brug #support til support.</p>
+            </div>
+
+            <div class="rule-item">
+                <span class="rule-title" data-i18n="rule-14-title">1.4 Ingen scam eller false betalinger</span>
+                <p class="rule-text" data-i18n="rule-14-text">Det vil resultere i permanent ban.</p>
+            </div>
+        </div>
+
+        <div class="warning" data-i18n="tos-warning">
+            Overtrædelse af reglerne kan føre til advarsel eller ban.
+        </div>
+
+        <a href="index.html" class="back-btn" data-i18n="back-btn">Tilbage til forsiden</a>
     </div>
 
     <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-theme');
+        const translations = {
+            'en': {
+                'page-title': 'Terms & Rules',
+                'tos-header': 'TERMS OF SERVICE',
+                'tos-21-title': '2.1 No Refunds',
+                'tos-21-text': 'Since these are digital products, no refunds are given unless the error is technical on our side.',
+                'tos-22-title': '2.2 Right of Use',
+                'tos-22-text': 'You may only use the items provided for your own consumption, and they may not be resold in any way.',
+                'tos-23-title': '2.3 Delivery',
+                'tos-23-text': 'As soon as you have paid, we start making your clothing and then you receive it.',
+                'tos-24-title': '2.4 Changes',
+                'tos-24-text': 'Small changes in colors or similar are basically free. Larger changes, however, cost extra.',
+                'tos-25-title': '2.5 Copyright',
+                'tos-25-text': 'This product may not be modified, resold, or changed and used for own consumption for e.g. resale.',
+                'tos-agreement': 'By ordering, you automatically accept these terms.',
+                'rules-header': 'RULES',
+                'rule-11-title': '1.1 Respect all members',
+                'rule-11-text': 'No discrimination, hate, or harassment.',
+                'rule-12-title': '1.2 No spam or advertising',
+                'rule-12-text': 'You may not advertise your own products or servers without permission.',
+                'rule-13-title': '1.3 Stick to the topic in each channel',
+                'rule-13-text': 'For example, only use #support for support.',
+                'rule-14-title': '1.4 No scam or false payments',
+                'rule-14-text': 'This will result in a permanent ban.',
+                'tos-warning': 'Violation of the rules can lead to a warning or ban.',
+                'back-btn': 'Back to Home'
+            },
+            'da': {
+                'page-title': 'Terms & Regler',
+                'tos-header': 'TERMS OF SERVICE',
+                'tos-21-title': '2.1 Ingen refunderinger',
+                'tos-21-text': 'Da det er digitale produkter, gives der ingen refundering, medmindre fejlen er på vores side teknisk.',
+                'tos-22-title': '2.2 Brugsret',
+                'tos-22-text': 'Du må kun bruge de leverede til eget forbrug, og de må ikke sælges videre på nogle måde.',
+                'tos-23-title': '2.3 Levering',
+                'tos-23-text': 'Lige så snart at du har betalt går vi i gang med at lave dit tøj og så derefter modtager du det.',
+                'tos-24-title': '2.4 Ændringer',
+                'tos-24-text': 'Små ændringer i farver eller lignende er sådan set gratis. Større ændringer koster dog ekstra.',
+                'tos-25-title': '2.5 Ophavsret',
+                'tos-25-text': 'Dette produkt må ikke ændres i samt sælges videre eller laves om i og bruges til eget forbrug til fx. Videre salg',
+                'tos-agreement': 'Ved at bestille accepterer du automatisk disse betingelser.',
+                'rules-header': 'REGLER',
+                'rule-11-title': '1.1 Respektér alle medlemmer',
+                'rule-11-text': 'Ingen diskrimination, had eller chikane',
+                'rule-12-title': '1.2 Ingen spam eller reklame',
+                'rule-12-text': 'Du må ikke reklamere for egne produkter eller servers uden tilladelse.',
+                'rule-13-title': '1.3 Hold dig til emnet i hver kanal',
+                'rule-13-text': 'Brug fx kun brug #support til support.',
+                'rule-14-title': '1.4 Ingen scam eller false betalinger',
+                'rule-14-text': 'Det vil resultere i permanent ban.',
+                'tos-warning': 'Overtrædelse af reglerne kan føre til advarsel eller ban.',
+                'back-btn': 'Tilbage til forsiden'
+            }
+        };
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
         }
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || !currentTheme) {
+            document.body.classList.add('dark-theme');
+            if (!currentTheme) localStorage.setItem('theme', 'dark');
+        }
+
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
     </script>
 </body>
 </html>

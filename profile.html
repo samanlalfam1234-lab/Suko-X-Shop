@@ -6,27 +6,26 @@
     <title>Min Konto | Suko Shop</title>
     <style>
         :root {
-            --bg: #fafbfc;
-            --card-bg: #f0f4f9;
-            --text-main: #1a1a1a;
-            --text-dim: #6c757d;
-            --border: #d2d2d7;
-            --accent: #0066cc;
-            --accent-light: #e6f0ff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #ffffff;
+            --card-bg: #f8fbff;
+            --text-main: #000000;
+            --text-dim: #4b5563;
+            --border: rgba(0, 0, 0, 0.1);
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
         }
 
-        /* Dark Theme Variables */
         body.dark-theme {
-            --bg: #0f1419;
-            --card-bg: #1a1f2e;
-            --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
-            --border: #2d3748;
-            --accent: #4d94ff;
-            --accent-light: rgba(77, 148, 255, 0.1);
-            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            --bg: #0a0e14;
+            --card-bg: #111821;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.05);
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
         @keyframes slideIn {
@@ -60,9 +59,9 @@
 
         .profile-wrapper {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1400px;
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 400px 1fr;
             gap: 30px;
             animation: fadeIn 0.6s ease-out;
         }
@@ -73,6 +72,21 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             box-shadow: var(--shadow);
+        }
+
+        /* 3D Logo Styling */
+        .logo-3d {
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.8)) 
+                    drop-shadow(4px 4px 0px rgba(59, 130, 246, 0.6))
+                    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.4));
+            transform: perspective(1000px) rotateX(10deg) rotateY(-10deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.9))
+                    drop-shadow(4px 4px 16px rgba(59, 130, 246, 0.5));
         }
 
         /* Sidebar Styles */
@@ -126,16 +140,20 @@
         #file-input { display: none; }
 
         .sidebar h2 { 
-            font-size: 1.25rem; 
-            font-weight: 800; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
             margin-top: 1rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
+            word-break: break-all;
+            color: var(--text-main);
         }
 
         .sidebar p { 
             font-size: 0.85rem; 
             color: var(--text-dim); 
             margin-bottom: 1.5rem; 
+            word-break: break-all;
+            opacity: 0.8;
         }
 
         .side-nav { text-align: left; border-top: 1px solid var(--border); padding-top: 1.5rem; }
@@ -237,77 +255,152 @@
 
         .btn-save {
             background: var(--accent);
-            color: var(--bg);
+            color: white;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
             margin-top: 1rem;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 14px var(--accent-light);
+        }
+
+        .theme-toggle-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .theme-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .theme-btn.active {
+            border-color: var(--accent);
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .theme-btn:hover:not(.active) {
+            border-color: var(--accent);
         }
 
         @media (max-width: 850px) {
             .profile-wrapper { grid-template-columns: 1fr; }
             .sidebar { position: static; }
         }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            min-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left: 4px solid #27ae60; border-color: #27ae60; }
+        .toast.error { border-left: 4px solid #ff4444; border-color: #ff4444; }
     </style>
 </head>
 <body>
 
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="profile-wrapper">
         <aside class="sidebar">
+            <!-- ÆNDRE LOGO HER -->
+            <a href="index.html" style="text-decoration: none; margin-bottom: 2rem; display: block;">
+                <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 60px; height: 60px; border-radius: 12px; margin: 0 auto; display: block;">
+            </a>
             <div class="profile-pic-container">
                 <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profilbillede">
-                <label for="file-input" class="change-pic-btn">Skift billede</label>
+                <label for="file-input" class="change-pic-btn" data-i18n="change-pic">Skift billede</label>
                 <input type="file" id="file-input" accept="image/*">
             </div>
             <h2 id="side-name">Indlæser...</h2>
             <p id="side-email">Indlæser...</p>
             
             <nav class="side-nav">
-                <a href="index.html">← Forsiden</a>
-                <a href="#" class="nav-link active" data-target="info">Brugerinfo</a>
-                <a href="#" class="nav-link" data-target="settings">Indstillinger</a>
-                <a href="#" class="nav-link" id="user-tickets-link" data-target="tickets">Mine Tickets</a>
-                <a href="admin.html" id="admin-tickets-link" style="display: none; color: #cc0000; text-decoration: none; font-size: 0.9rem; padding: 0.6rem 0.8rem; font-weight: 500;">★ Staff Panel</a>
-                <a href="#" id="logout-btn" class="logout-btn">Log ud</a>
+                <a href="index.html" data-i18n="nav-home">← Forsiden</a>
+                <a href="#" class="nav-link active" data-target="info" data-i18n="nav-info">Brugerinfo</a>
+                <a href="#" class="nav-link" data-target="settings" data-i18n="nav-settings">Indstillinger</a>
+                <a href="#" class="nav-link" id="user-tickets-link" data-target="tickets" data-i18n="nav-tickets">Mine Tickets</a>
+                <a href="#" id="logout-btn" class="logout-btn" data-i18n="nav-logout">Log ud</a>
+                <a href="admin.html" id="admin-tickets-link" style="display: none; color: #cc0000; text-decoration: none; font-size: 0.75rem; padding: 0.6rem 1rem; font-weight: 600; border: 1px solid rgba(204,0,0,0.2); border-radius: 10px; margin-top: 0.5rem; text-align: center;">Staff Panel</a>
             </nav>
         </aside>
 
         <main class="main-content">
             <!-- User Info Section -->
             <section id="info-section" class="content-section active">
-                <h3 class="section-title">Brugerinformation</h3>
+                <h3 class="section-title" data-i18n="info-title">Brugerinformation</h3>
                 <div class="info-grid">
                     <div class="info-item">
-                        <label>Fulde Navn</label>
+                        <label data-i18n="info-name">Fulde Navn</label>
                         <span id="full-name">Indlæser...</span>
                     </div>
                     <div class="info-item">
-                        <label>E-mail</label>
+                        <label data-i18n="info-email">E-mail</label>
                         <span id="full-email">Indlæser...</span>
                     </div>
                     <div class="info-item">
-                        <label>Medlem Siden</label>
-                        <span>Februar 2026</span>
+                        <label data-i18n="info-member">Medlem Siden</label>
+                        <span data-i18n="info-date">Februar 2026</span>
                     </div>
                 </div>
             </section>
 
             <!-- Tickets Section (User) -->
             <section id="tickets-section" class="content-section">
-                <h3 class="section-title">Mine Tickets</h3>
+                <h3 class="section-title" data-i18n="tickets-title">Mine Tickets</h3>
                 <div id="tickets-list">
-                    <p style="color: var(--text-dim);">Du har ingen aktive tickets.</p>
+                    <p style="color: var(--text-dim);" data-i18n="no-tickets">Du har ingen aktive tickets.</p>
                 </div>
-                <a href="tickets.html" class="btn-save" style="display: block; text-align: center; text-decoration: none; margin-top: 2rem;">Opret ny ticket</a>
+                <a href="tickets.html" class="btn-save" style="display: block; text-align: center; text-decoration: none; margin-top: 2rem;" data-i18n="create-ticket">Opret ny ticket</a>
             </section>
 
             <!-- Admin Tickets Section -->
             <section id="admin-tickets-section" class="content-section">
-                <h3 class="section-title">Admin Panel: Alle Tickets</h3>
+                <h3 class="section-title" data-i18n="admin-title">Admin Panel: Alle Tickets</h3>
                 <div id="admin-tickets-list">
                     <!-- Indlæses via JS -->
                 </div>
@@ -315,26 +408,172 @@
 
             <!-- Settings Section -->
             <section id="settings-section" class="content-section">
-                <h3 class="section-title">Indstillinger</h3>
+                <h3 class="section-title" data-i18n="settings-title">Indstillinger</h3>
                 
                 <div class="settings-group">
+                    <div class="theme-toggle-item">
+                        <label data-i18n="select-theme">Vælg Tema</label>
+                        <div class="theme-btn-group">
+                            <button class="theme-btn" id="light-theme-btn" data-i18n="theme-light">
+                                Lyst
+                            </button>
+                            <button class="theme-btn" id="dark-theme-btn" data-i18n="theme-dark">
+                                Mørkt
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="theme-toggle-item" style="margin-top: 1.5rem;">
+                        <label data-i18n="select-language">Vælg Sprog</label>
+                        <div class="theme-btn-group">
+                            <button class="theme-btn" id="lang-en-btn">
+                                English
+                            </button>
+                            <button class="theme-btn" id="lang-da-btn">
+                                Dansk
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="settings-item" style="flex-direction: column; align-items: flex-start;">
-                        <label>Skift Navn</label>
+                        <label data-i18n="change-name">Skift Navn</label>
                         <input type="text" id="edit-name" placeholder="Indtast nyt navn">
                     </div>
 
                     <div class="settings-item" style="flex-direction: column; align-items: flex-start;">
-                        <label>Skift E-mail</label>
+                        <label data-i18n="change-email">Skift E-mail</label>
                         <input type="text" id="edit-email" placeholder="Indtast ny e-mail">
                     </div>
                 </div>
 
-                <button class="btn-save" id="save-settings">Gem ændringer</button>
+                <button class="btn-save" id="save-settings" data-i18n="save-btn">Gem ændringer</button>
             </section>
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Supabase configuration - ERSTAT MED DINE EGNE OPLYSNINGER
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const translations = {
+            'en': {
+                'change-pic': 'Change Picture',
+                'nav-home': '← Home',
+                'nav-info': 'User Info',
+                'nav-settings': 'Settings',
+                'nav-tickets': 'My Tickets',
+                'nav-logout': 'Log Out',
+                'info-title': 'User Information',
+                'info-name': 'Full Name',
+                'info-email': 'E-mail',
+                'info-member': 'Member Since',
+                'info-date': 'February 2026',
+                'tickets-title': 'My Tickets',
+                'no-tickets': 'You have no active tickets.',
+                'create-ticket': 'Create New Ticket',
+                'admin-title': 'Admin Panel: All Tickets',
+                'settings-title': 'Settings',
+                'select-theme': 'Select Theme',
+                'theme-light': 'Light',
+                'theme-dark': 'Dark',
+                'select-language': 'Select Language',
+                'change-name': 'Change Name',
+                'change-email': 'Change E-mail',
+                'save-btn': 'Save Changes',
+                'loading': 'Loading...',
+                'ticket-id': 'ID',
+                'ticket-date': 'Date',
+                'ticket-open': 'Open Ticket',
+                'ticket-user': 'USER',
+                'ticket-chat': 'Go to chat',
+                'ticket-delete': 'Delete Ticket',
+                'settings-saved': 'Settings saved successfully!',
+                'save-error': 'Error saving settings',
+                'pic-success': 'Profile picture updated successfully!'
+            },
+            'da': {
+                'change-pic': 'Skift billede',
+                'nav-home': '← Forsiden',
+                'nav-info': 'Brugerinfo',
+                'nav-settings': 'Indstillinger',
+                'nav-tickets': 'Mine Tickets',
+                'nav-logout': 'Log ud',
+                'info-title': 'Brugerinformation',
+                'info-name': 'Fulde Navn',
+                'info-email': 'E-mail',
+                'info-member': 'Medlem Siden',
+                'info-date': 'Februar 2026',
+                'tickets-title': 'Mine Tickets',
+                'no-tickets': 'Du har ingen aktive tickets.',
+                'create-ticket': 'Opret ny ticket',
+                'admin-title': 'Admin Panel: Alle Tickets',
+                'settings-title': 'Indstillinger',
+                'select-theme': 'Vælg Tema',
+                'theme-light': 'Lyst',
+                'theme-dark': 'Mørkt',
+                'select-language': 'Vælg Sprog',
+                'change-name': 'Skift Navn',
+                'change-email': 'Skift E-mail',
+                'save-btn': 'Gem ændringer',
+                'loading': 'Indlæser...',
+                'ticket-id': 'ID',
+                'ticket-date': 'Dato',
+                'ticket-open': 'Åbn Ticket',
+                'ticket-user': 'BRUGER',
+                'ticket-chat': 'Gå til chat',
+                'ticket-delete': 'Slet Ticket',
+                'settings-saved': 'Indstillinger gemt succesfuldt!',
+                'save-error': 'Fejl ved gemning af indstillinger',
+                'pic-success': 'Profilbillede opdateret succesfuldt!'
+            }
+        };
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            const nameInput = document.getElementById('edit-name');
+            const emailInput = document.getElementById('edit-email');
+            if (lang === 'en') {
+                nameInput.placeholder = 'Enter new name';
+                emailInput.placeholder = 'Enter new e-mail';
+            } else {
+                nameInput.placeholder = 'Indtast nyt navn';
+                emailInput.placeholder = 'Indtast ny e-mail';
+            }
+
+            // Update active state
+            document.getElementById('lang-en-btn').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-da-btn').classList.toggle('active', lang === 'da');
+        }
+
+        document.getElementById('lang-en-btn').addEventListener('click', () => updateLanguage('en'));
+        document.getElementById('lang-da-btn').addEventListener('click', () => updateLanguage('da'));
+
         // Tab switching logic
         const navLinks = document.querySelectorAll('.nav-link');
         const sections = document.querySelectorAll('.content-section');
@@ -355,23 +594,77 @@
         });
 
         // Load Initial Data
-        function loadData() {
-            const userName = localStorage.getItem('userName') || 'Konto';
-            const userEmail = localStorage.getItem('userEmail') || 'ikke angivet';
+        async function loadData() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            
+            // Liste over Discord IDs der har Staff adgang
+            const staffIds = [
+                '1082667160461127720',
+                '1231963657047375937',
+                '1192535733987184680',
+                '727130234125680641',
+                '776463695299346442'
+            ];
+
+            if (session && session.user) {
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                }
+            }
+
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            let userName = localStorage.getItem('userName') || 'User';
+            let userEmail = localStorage.getItem('userEmail') || 'not set';
+
+            if (session && session.user) {
+                userEmail = session.user.email;
+                userName = session.user.user_metadata.full_name || userEmail.split('@')[0];
+                localStorage.setItem('userName', userName);
+                localStorage.setItem('userEmail', userEmail);
+            }
+
             const profilePic = localStorage.getItem('profilePic');
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'dark');
+            const lang = localStorage.getItem('language') || 'en'; // Default to English
+            if (!localStorage.getItem('language')) localStorage.setItem('language', 'en');
+
+            updateLanguage(lang);
 
             if (profilePic) {
                 document.getElementById('profile-pic').src = profilePic;
             }
 
-            document.getElementById('side-name').textContent = 'Konto';
+            document.getElementById('side-name').textContent = userName;
             document.getElementById('full-name').textContent = userName;
             document.getElementById('edit-name').value = userName;
-            document.getElementById('side-email').textContent = userEmail;
+            
+            // Hide email if it is the same as the name
+            if (userName.toLowerCase() === userEmail.toLowerCase()) {
+                document.getElementById('side-email').style.display = 'none';
+            } else {
+                document.getElementById('side-email').textContent = userEmail;
+                document.getElementById('side-email').style.display = 'block';
+            }
+            
             document.getElementById('full-email').textContent = userEmail;
-            document.getElementById('edit-email').value = userEmail === 'ikke angivet' ? '' : userEmail;
+            document.getElementById('edit-email').value = userEmail === 'not set' || userEmail === 'ikke angivet' ? '' : userEmail;
 
-            document.body.classList.add('dark-theme');
+            // Tema håndtering
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('dark-theme-btn').classList.add('active');
+                document.getElementById('light-theme-btn').classList.remove('active');
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('light-theme-btn').classList.add('active');
+                document.getElementById('dark-theme-btn').classList.remove('active');
+            }
 
             const isStaff = localStorage.getItem('isStaff') === 'true';
             const allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
@@ -392,6 +685,7 @@
             if (userTickets.length > 0) {
                 ticketsList.innerHTML = '';
                 userTickets.forEach(t => {
+                    const currentLang = localStorage.getItem('language') || 'en';
                     const div = document.createElement('div');
                     div.style.padding = '1rem';
                     div.style.borderBottom = '1px solid var(--border)';
@@ -399,18 +693,19 @@
                     div.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <strong>${t.subject}</strong>
-                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : 'var(--accent)'}; color: var(--bg); padding: 2px 8px; border-radius: 10px;">${t.status}</span>
+                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : 'var(--accent)'}; color: white; padding: 2px 8px; border-radius: 10px;">${t.status}</span>
                         </div>
                         <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">${t.message.substring(0, 100)}${t.message.length > 100 ? '...' : ''}</p>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-                            <div style="font-size: 0.75rem; color: var(--text-dim);">ID: ${t.id} • Dato: ${t.date}</div>
-                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px;">Åbn Ticket</a>
+                            <div style="font-size: 0.75rem; color: var(--text-dim);">${translations[currentLang]['ticket-id']}: ${t.id} • ${translations[currentLang]['ticket-date']}: ${t.date}</div>
+                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px;">${translations[currentLang]['ticket-open']}</a>
                         </div>
                     `;
                     ticketsList.appendChild(div);
                 });
             } else {
-                ticketsList.innerHTML = '<p style="color: var(--text-dim);">Du har ingen aktive tickets.</p>';
+                const currentLang = localStorage.getItem('language') || 'en';
+                ticketsList.innerHTML = `<p style="color: var(--text-dim);">${translations[currentLang]['no-tickets']}</p>`;
             }
 
             // Admin-specifikke tickets (Staff visning)
@@ -418,9 +713,11 @@
                 const adminList = document.getElementById('admin-tickets-list');
                 adminList.innerHTML = '';
                 if (allTickets.length === 0) {
-                    adminList.innerHTML = '<p style="color: var(--text-dim);">Der er ingen tickets i systemet.</p>';
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    adminList.innerHTML = `<p style="color: var(--text-dim);">${translations[currentLang]['no-tickets']}</p>`;
                 }
                 allTickets.forEach(t => {
+                    const currentLang = localStorage.getItem('language') || 'en';
                     const div = document.createElement('div');
                     div.style.padding = '1.5rem';
                     div.style.border = '1px solid var(--border)';
@@ -429,14 +726,14 @@
                     div.style.background = 'rgba(0,0,0,0.02)';
                     div.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim);">BRUGER: ${t.owner || 'Ukendt'}</span>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim);">${translations[currentLang]['ticket-user']}: ${t.owner || 'Ukendt'}</span>
                             <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : '#27ae60'}; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">${t.status}</span>
                         </div>
                         <h4 style="margin-bottom: 0.5rem;">${t.subject}</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-dim);">${t.message}</p>
                         <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; background: var(--accent); color: var(--bg); text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 600;">Gå til chat</a>
-                            <button onclick="closeTicket('${t.id}')" style="font-size: 0.8rem; background: #ff4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">Slet Ticket</button>
+                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; background: var(--accent); color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 600;">${translations[currentLang]['ticket-chat']}</a>
+                            <button onclick="closeTicket('${t.id}')" style="font-size: 0.8rem; background: #ff4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">${translations[currentLang]['ticket-delete']}</button>
                         </div>
                     `;
                     adminList.appendChild(div);
@@ -456,36 +753,65 @@
 
         loadData();
 
+        // Theme Toggle Buttons
+        document.getElementById('light-theme-btn').addEventListener('click', () => {
+            localStorage.setItem('theme', 'light');
+            loadData();
+        });
+
+        document.getElementById('dark-theme-btn').addEventListener('click', () => {
+            localStorage.setItem('theme', 'dark');
+            loadData();
+        });
+
         // Save Settings
-        document.getElementById('save-settings').addEventListener('click', () => {
+        document.getElementById('save-settings').addEventListener('click', async () => {
+            const currentLang = localStorage.getItem('language') || 'en';
             const newName = document.getElementById('edit-name').value;
             const newEmail = document.getElementById('edit-email').value;
             
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                const { error } = await supabaseClient.auth.updateUser({
+                    data: { full_name: newName }
+                });
+                if (error) {
+                    showToast(translations[currentLang]['save-error'] + ': ' + error.message, 'error');
+                }
+            }
+
             if (newName) localStorage.setItem('userName', newName);
             if (newEmail) localStorage.setItem('userEmail', newEmail);
             
             loadData();
-            alert('Indstillinger gemt!');
+            showToast(translations[currentLang]['settings-saved'], 'success');
         });
 
         // Profile Pic
         document.getElementById('file-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                const currentLang = localStorage.getItem('language') || 'en';
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const base64Image = event.target.result;
                     document.getElementById('profile-pic').src = base64Image;
                     localStorage.setItem('profilePic', base64Image);
+                    showToast(translations[currentLang]['pic-success'], 'success');
                 };
                 reader.readAsDataURL(file);
             }
         });
 
         // Logout
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
+            await supabaseClient.auth.signOut();
             localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('isStaff');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
             window.location.href = 'index.html';
         });
     </script>

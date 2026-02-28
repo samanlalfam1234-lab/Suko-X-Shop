@@ -6,24 +6,26 @@
     <title>Opret Ticket | Suko Shop</title>
     <style>
         :root {
-            --bg: #fafbfc;
-            --card-bg: #f0f4f9;
-            --text-main: #1a1a1a;
-            --text-dim: #6c757d;
-            --border: #d2d2d7;
-            --accent: #0066cc;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --bg: #e1e7ed;
+            --card-bg: #f8fbff;
+            --text-main: #24292f;
+            --text-dim: #57606a;
+            --border: #d0d7de;
+            --accent: #0969da;
+            --accent-light: rgba(9, 105, 218, 0.05);
+            --shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-theme {
-            --bg: #0f1419;
-            --card-bg: #1a1f2e;
-            --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
-            --border: #2d3748;
-            --accent: #4d94ff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            --bg: #0a0e14;
+            --card-bg: #111821;
+            --text-main: #e0e6ed;
+            --text-dim: #8492a6;
+            --border: #1f2937;
+            --accent: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         @keyframes fadeIn {
@@ -60,6 +62,21 @@
             border-radius: 20px;
             box-shadow: var(--shadow);
             animation: fadeIn 0.6s ease-out;
+        }
+
+        /* 3D Logo Styling */
+        .logo-3d {
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.8)) 
+                    drop-shadow(4px 4px 0px rgba(59, 130, 246, 0.6))
+                    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.4));
+            transform: perspective(1000px) rotateX(10deg) rotateY(-10deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            filter: drop-shadow(2px 2px 0px rgba(59, 130, 246, 0.9))
+                    drop-shadow(4px 4px 16px rgba(59, 130, 246, 0.5));
         }
 
         h1 {
@@ -115,20 +132,21 @@
         .btn {
             width: 100%;
             background: var(--accent);
-            color: var(--bg);
+            color: white;
             padding: 1.25rem;
             border: none;
-            font-weight: 800;
+            font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px var(--accent-light);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px var(--accent-light);
+            filter: brightness(1.1);
         }
 
         .back-link {
@@ -147,43 +165,98 @@
 <body>
 
     <div class="ticket-container">
-        <h1>Opret en Ticket</h1>
-        <p>Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.</p>
+        <!-- ÆNDRE LOGO HER -->
+        <a href="index.html" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; text-decoration: none; margin-bottom: 2rem;">
+            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 70px; height: 70px; border-radius: 14px;">
+        </a>
+        <h1 data-i18n="ticket-title">Opret en Ticket</h1>
+        <p data-i18n="ticket-desc">Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.</p>
 
         <form id="ticketForm">
             <div class="form-group">
-                <label>Emne</label>
+                <label data-i18n="label-subject">Emne</label>
                 <select id="subject" required onchange="checkSubject()">
-                    <option value="">Vælg emne...</option>
-                    <option value="Standard Hjemmeside (30 kr)">Køb af Standard Hjemmeside (30 kr)</option>
+                    <option value="" data-i18n="opt-choose">Vælg emne...</option>
+                    <option value="Standard Hjemmeside (30 kr)" data-i18n="opt-standard">Køb af Standard Hjemmeside (30 kr)</option>
                 </select>
             </div>
 
             <!-- Template Selection (Synlig ved Standard) -->
             <div class="form-group" id="template-group" style="display: none;">
-                <label>Vælg Template</label>
+                <label data-i18n="label-template">Vælg Template</label>
                 <select id="template-choice">
                     <option value="FiveM Hjemmeside 1">FiveM Hjemmeside 1</option>
-                    <option value="FiveM Hjemmeside 2">FiveM Hjemmeside 2</option>
-                    <option value="FiveM Hjemmeside 3">FiveM Hjemmeside 3</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Besked</label>
+                <label data-i18n="label-message">Besked</label>
                 <textarea id="message" placeholder="Beskriv dine ønsker eller spørgsmål..." required></textarea>
             </div>
 
-            <button type="submit" class="btn">Send Ticket</button>
+            <button type="submit" class="btn" data-i18n="btn-send">Send Ticket</button>
         </form>
 
-        <a href="pricing.html" class="back-link">← Tilbage til Store</a>
+        <a href="pricing.html" class="back-link" data-i18n="back-store">← Tilbage til Store</a>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-theme');
+        // Supabase configuration
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const translations = {
+            'en': {
+                'ticket-title': 'Create a Ticket',
+                'ticket-desc': 'Tell us what you want to buy, and we will get back to you as soon as possible.',
+                'label-subject': 'Subject',
+                'opt-choose': 'Choose subject...',
+                'opt-standard': 'Buy Standard Website (30 DKK)',
+                'label-template': 'Choose Template',
+                'label-message': 'Message',
+                'message-placeholder': 'Describe your wishes or questions...',
+                'btn-send': 'Send Ticket',
+                'back-store': '← Back to Store',
+                'alert-login': 'You must be logged in to create a ticket.',
+                'alert-success': 'Your ticket has been created! We will get back to you soon.'
+            },
+            'da': {
+                'ticket-title': 'Opret en Ticket',
+                'ticket-desc': 'Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.',
+                'label-subject': 'Emne',
+                'opt-choose': 'Vælg emne...',
+                'opt-standard': 'Køb af Standard Hjemmeside (30 kr)',
+                'label-template': 'Vælg Template',
+                'label-message': 'Besked',
+                'message-placeholder': 'Beskriv dine ønsker eller spørgsmål...',
+                'btn-send': 'Send Ticket',
+                'back-store': '← Tilbage til Store',
+                'alert-login': 'Du skal være logget ind for at oprette en ticket.',
+                'alert-success': 'Din ticket er nu oprettet! Vi vender tilbage snart.'
+            }
+        };
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            document.getElementById('message').placeholder = translations[lang]['message-placeholder'];
         }
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || !currentTheme) {
+            document.body.classList.add('dark-theme');
+            if (!currentTheme) localStorage.setItem('theme', 'dark');
+        }
+
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
 
         function checkSubject() {
             const subject = document.getElementById('subject').value;
@@ -198,13 +271,30 @@
         // Tjek om der er en pending order fra Store
         const pendingOrder = localStorage.getItem('pendingOrder');
         const selectedTemplate = localStorage.getItem('selectedTemplate');
+        const selectedPrice = localStorage.getItem('selectedPrice');
 
         if (pendingOrder) {
             const subjectSelect = document.getElementById('subject');
             
             // Hvis det er en standard template fra templates.html
             if (pendingOrder.startsWith('Standard (')) {
-                subjectSelect.value = 'Standard Hjemmeside (30 kr)';
+                const priceText = selectedPrice || '25 kr.';
+                
+                // Find eller opret option med den rigtige pris
+                let standardOpt = null;
+                for (let i = 0; i < subjectSelect.options.length; i++) {
+                    if (subjectSelect.options[i].value.includes('Standard Hjemmeside')) {
+                        standardOpt = subjectSelect.options[i];
+                        break;
+                    }
+                }
+
+                if (standardOpt) {
+                    standardOpt.textContent = `Køb af Standard Hjemmeside (${priceText})`;
+                    standardOpt.value = `Standard Hjemmeside (${priceText})`;
+                    subjectSelect.value = standardOpt.value;
+                }
+                
                 if (selectedTemplate) {
                     document.getElementById('template-choice').value = selectedTemplate;
                 }
@@ -235,13 +325,22 @@
         }
 
         // Tjek om logget ind
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            alert('Du skal være logget ind for at oprette en ticket.');
-            window.location.href = 'login.html';
+        async function checkSession() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const isMockStaff = localStorage.getItem('isStaff') === 'true';
+
+            if (!session && !isMockStaff) {
+                const lang = localStorage.getItem('language') || 'en';
+                alert(translations[lang]['alert-login']);
+                window.location.href = 'login.html';
+            }
         }
+
+        checkSession();
 
         document.getElementById('ticketForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const lang = localStorage.getItem('language') || 'en';
             
             let finalSubject = document.getElementById('subject').value;
             if (finalSubject.includes('Standard Hjemmeside')) {
@@ -262,7 +361,7 @@
             tickets.push(ticket);
             localStorage.setItem('userTickets', JSON.stringify(tickets));
 
-            alert('Din ticket er nu oprettet! Vi vender tilbage snart.');
+            alert(translations[lang]['alert-success']);
             window.location.href = 'profile.html';
         });
     </script>
