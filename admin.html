@@ -344,7 +344,7 @@
         <header>
             <div style="display: flex; align-items: center; gap: 1.5rem;">
                 <!-- ÆNDRE LOGO HER -->
-                <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
+                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
                 <div>
                     <a href="index.html" class="back-link" data-i18n="back-link">← Tilbage til siden</a>
                     <h1 data-i18n="staff-panel">Staff Panel</h1>
@@ -369,14 +369,20 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const translations = {
             'en': {
                 'back-link': '← Back to site',
                 'staff-panel': 'Staff Panel',
                 'open-tickets': 'Open Tickets',
                 'today': 'Today',
-                'empty-msg': '🎉 No active tickets. Good boy
+                'empty-msg': '🎉 No active tickets. Good boy!',
                 'status-open': 'OPEN',
                 'id': 'ID',
                 'user': 'User',
@@ -435,8 +441,25 @@
             return `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
         }
 
-        function loadAdminData() {
-            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+        async function loadAdminData() {
+            let tickets = [];
+            try {
+                const { data, error } = await supabaseClient
+                    .from('tickets')
+                    .select('*');
+                
+                if (data && !error) {
+                    tickets = data.map(t => ({
+                        id: t.ticket_id || t.id,
+                        ...t
+                    }));
+                } else {
+                    tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                }
+            } catch (err) {
+                tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            }
+
             const list = document.getElementById('admin-tickets-list');
             const currentLang = localStorage.getItem('language') || 'en';
             
@@ -457,11 +480,11 @@
             sortedTickets.forEach(t => {
                 const div = document.createElement('div');
                 div.className = 'ticket-item';
-                const messagePreview = t.message.substring(0, 80) + (t.message.length > 80 ? '...' : '');
+                const messagePreview = (t.message || '').substring(0, 80) + ((t.message || '').length > 80 ? '...' : '');
                 div.innerHTML = `
                     <div class="ticket-info">
                         <div class="ticket-meta">
-                            <span class="status-badge">${translations[currentLang]['status-open']}</span>
+                            <span class="status-badge" style="background: ${t.status === 'Lukket' ? '#999' : '#34c759'}">${t.status}</span>
                             <span><strong>${translations[currentLang]['id']}:</strong> ${t.id}</span>
                             <span><strong>${translations[currentLang]['user']}:</strong> ${t.owner || translations[currentLang]['unknown']}</span>
                             <span><strong>${translations[currentLang]['date']}:</strong> ${t.date}</span>
@@ -473,17 +496,54 @@
                     </div>
                     <div class="actions">
                         <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" class="btn btn-view">${translations[currentLang]['btn-view']}</a>
-                        <button onclick="closeTicket('${t.id}')" class="btn btn-delete">${translations[currentLang]['btn-delete']}</button>
+                        <button onclick="deleteTicket('${t.id}')" class="btn btn-delete">${translations[currentLang]['btn-delete']}</button>
                     </div>
                 `;
                 list.appendChild(div);
             });
         }
 
-        function closeTicket(id) {
-            let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-            tickets = tickets.filter(t => t.id !== id);
-            localStorage.setItem('userTickets', JSON.stringify(tickets));
+        /* 
+        SQL for at oprette tickets tabellen i Supabase:
+        
+        create table tickets (
+          id uuid default uuid_generate_v4() primary key,
+          ticket_id text not null,
+          subject text not null,
+          message text not null,
+          date text not null,
+          status text default 'Åben',
+          owner text not null,
+          user_email text,
+          replies jsonb default '[]'::jsonb,
+          created_at timestamp with time zone default timezone('utc'::text, now()) not null
+        );
+
+        -- Giv alle adgang til at læse/skrive (Husk at opsætte RLS hvis det skal være sikkert)
+        alter table tickets enable row level security;
+        create policy "Giv adgang til alt" on tickets for all using (true);
+        */
+
+        async function deleteTicket(id) {
+            if (!confirm('Er du sikker på at du vil slette denne ticket permanent?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('tickets')
+                    .delete()
+                    .match({ ticket_id: id });
+
+                if (error) {
+                    // Fallback to localStorage
+                    let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                    tickets = tickets.filter(t => t.id !== id);
+                    localStorage.setItem('userTickets', JSON.stringify(tickets));
+                }
+            } catch (err) {
+                let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                tickets = tickets.filter(t => t.id !== id);
+                localStorage.setItem('userTickets', JSON.stringify(tickets));
+            }
             loadAdminData();
         }
     </script>

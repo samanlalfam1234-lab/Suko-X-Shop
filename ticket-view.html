@@ -424,7 +424,7 @@
         <div class="ticket-header">
             <div style="display: flex; align-items: center; gap: 1.25rem;">
                 <!-- ÆNDRE LOGO HER -->
-                <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
+                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
                 <div class="ticket-header-info">
                     <h1 id="ticket-id-display">Ticket #0000</h1>
                     <p id="ticket-subject" style="font-size: 0.9rem; color: var(--text-dim);"></p>
@@ -517,11 +517,31 @@
         const urlParams = new URLSearchParams(window.location.search);
         const ticketId = urlParams.get('id');
         const currentUser = localStorage.getItem('userName');
+        const userEmail = localStorage.getItem('userEmail');
         const isStaff = localStorage.getItem('isStaff') === 'true';
 
-        function loadTicket() {
-            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-            const ticket = tickets.find(t => t.id === ticketId);
+        async function loadTicket() {
+            let ticket = null;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('tickets')
+                    .select('*')
+                    .eq('ticket_id', ticketId)
+                    .single();
+                
+                if (data && !error) {
+                    ticket = {
+                        id: data.ticket_id,
+                        ...data
+                    };
+                } else {
+                    const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                    ticket = tickets.find(t => t.id === ticketId);
+                }
+            } catch (err) {
+                const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                ticket = tickets.find(t => t.id === ticketId);
+            }
 
             if (!ticket) {
                 document.getElementById('main-view').style.display = 'none';
@@ -530,13 +550,14 @@
             }
 
             // Tjek adgang (Kunde eller Staff)
-            if (!isStaff && ticket.owner !== currentUser && ticket.owner !== undefined) {
-                 // Hvis ticket.owner findes og ikke matcher brugeren, og man ikke er staff
-                 // (Gamle tickets har ikke owner, så vi lader dem passere for bagudkompatibilitet)
+            const isOwner = ticket.user_email === userEmail || ticket.owner === currentUser || ticket.owner === undefined;
+            if (!isStaff && !isOwner) {
+                document.getElementById('main-view').style.display = 'none';
+                document.getElementById('access-denied').style.display = 'block';
+                return;
             }
 
             const isClosed = ticket.status === 'Lukket';
-            const isOwner = !isStaff && (ticket.owner === currentUser || ticket.owner === undefined);
 
             document.getElementById('ticket-id-display').textContent = 'Ticket ' + ticket.id;
             document.getElementById('ticket-subject').textContent = ticket.subject;
@@ -559,7 +580,7 @@
             // Den oprindelige besked
             addMessage('Kunde', ticket.message, 'customer');
 
-            // Replies (vi gemmer dem i ticket objektet)
+            // Replies
             if (ticket.replies) {
                 ticket.replies.forEach(r => {
                     addMessage(r.sender, r.text, r.role);
@@ -590,46 +611,91 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const text = document.getElementById('message-input').value.trim();
             if (!text) return;
 
-            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-            const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+            let ticket = null;
+            let source = 'supabase';
             
-            if (ticketIndex !== -1) {
-                if (!tickets[ticketIndex].replies) tickets[ticketIndex].replies = [];
+            try {
+                const { data, error } = await supabaseClient
+                    .from('tickets')
+                    .select('*')
+                    .eq('ticket_id', ticketId)
+                    .single();
                 
-                const role = isStaff ? 'staff' : 'customer';
-                const sender = isStaff ? 'Support Staff' : currentUser;
-
-                tickets[ticketIndex].replies.push({
-                    sender: sender,
-                    text: text,
-                    role: role,
-                    date: new Date().toLocaleString()
-                });
-
-                localStorage.setItem('userTickets', JSON.stringify(tickets));
-                addMessage(sender, text, role);
-                document.getElementById('message-input').value = '';
-                document.getElementById('message-input').focus();
+                if (data && !error) {
+                    ticket = data;
+                } else {
+                    source = 'local';
+                }
+            } catch (err) {
+                source = 'local';
             }
+
+            const role = isStaff ? 'staff' : 'customer';
+            const sender = isStaff ? 'Support Staff' : currentUser;
+            const newReply = {
+                sender: sender,
+                text: text,
+                role: role,
+                date: new Date().toLocaleString()
+            };
+
+            if (source === 'supabase') {
+                const replies = ticket.replies || [];
+                replies.push(newReply);
+                
+                const { error } = await supabaseClient
+                    .from('tickets')
+                    .update({ replies: replies })
+                    .eq('ticket_id', ticketId);
+                
+                if (error) console.error('Error updating replies:', error);
+            } else {
+                const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+                if (ticketIndex !== -1) {
+                    if (!tickets[ticketIndex].replies) tickets[ticketIndex].replies = [];
+                    tickets[ticketIndex].replies.push(newReply);
+                    localStorage.setItem('userTickets', JSON.stringify(tickets));
+                }
+            }
+
+            addMessage(sender, text, role);
+            document.getElementById('message-input').value = '';
+            document.getElementById('message-input').focus();
         }
 
-        function closeTicket() {
+        async function closeTicket() {
             if (!confirm('Er du sikker på at du vil lukke denne ticket? Du kan ikke skrive flere beskeder efter lukning.')) {
                 return;
             }
 
-            const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-            const ticketIndex = tickets.findIndex(t => t.id === ticketId);
-
-            if (ticketIndex !== -1) {
-                tickets[ticketIndex].status = 'Lukket';
-                localStorage.setItem('userTickets', JSON.stringify(tickets));
-                loadTicket();
+            try {
+                const { error } = await supabaseClient
+                    .from('tickets')
+                    .update({ status: 'Lukket' })
+                    .eq('ticket_id', ticketId);
+                
+                if (error) {
+                    const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+                    if (ticketIndex !== -1) {
+                        tickets[ticketIndex].status = 'Lukket';
+                        localStorage.setItem('userTickets', JSON.stringify(tickets));
+                    }
+                }
+            } catch (err) {
+                const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+                if (ticketIndex !== -1) {
+                    tickets[ticketIndex].status = 'Lukket';
+                    localStorage.setItem('userTickets', JSON.stringify(tickets));
+                }
             }
+            loadTicket();
         }
 
         document.getElementById('send-btn').addEventListener('click', sendMessage);

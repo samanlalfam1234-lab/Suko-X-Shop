@@ -241,7 +241,7 @@
     <div class="login-container">
         <!-- ÆNDRE LOGO HER -->
         <a href="index.html" class="logo" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; box-shadow: var(--shadow);">
+            <img src="/hjemmeside SL/SukoShop.png" alt="Logo" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; box-shadow: var(--shadow);">
             <span>Suko Shop</span>
         </a>
         <h1 data-i18n="welcome-back">Velkommen tilbage</h1>
@@ -345,10 +345,15 @@
         }
 
         document.getElementById('discordLogin').addEventListener('click', async () => {
+            // Sørg for at vi har en valid URL selv hvis vi kører lokalt
+            const redirectTo = window.location.origin.includes('://') 
+                ? window.location.origin + '/index.html' 
+                : window.location.href.split('login.html')[0] + 'index.html';
+
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'discord',
                 options: {
-                    redirectTo: window.location.href.split('login.html')[0] + 'index.html'
+                    redirectTo: redirectTo
                 }
             });
             if (error) showToast(error.message, 'error');
@@ -380,9 +385,23 @@
 
                 if (data.user) {
                     localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('isStaff', 'false');
                     localStorage.setItem('userEmail', data.user.email);
                     localStorage.setItem('userName', data.user.user_metadata.full_name || data.user.email.split('@')[0]);
+
+                    // Tjek staff status
+                    const staffIds = [
+                        '1082667160461127720',
+                        '1231963657047375937',
+                        '1192535733987184680',
+                        '727130234125680641',
+                        '776463695299346442'
+                    ];
+                    const discordId = data.user.user_metadata.provider_id || data.user.user_metadata.sub;
+                    if (staffIds.includes(discordId)) {
+                        localStorage.setItem('isStaff', 'true');
+                    } else {
+                        localStorage.setItem('isStaff', 'false');
+                    }
                     
                     showToast(translations[currentLang]['login-success'], 'success');
                     setTimeout(() => {
@@ -396,16 +415,6 @@
                 btn.disabled = false;
             }
         });
-<script>
-document.getElementById('discordLogin').addEventListener('click', async () => {
-    const { data, error } = await supabaseClient.auth.signInWithOAuth({
-        provider: 'discord',
-        options: {
-            redirectTo: 'https://sukoshop.netlify.app/login.html'
-        }
-    });
-    if (error) showToast(error.message, 'error');
-});
-</script>
+    </script>
 </body>
 </html>

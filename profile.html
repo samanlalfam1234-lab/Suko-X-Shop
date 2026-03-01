@@ -347,7 +347,7 @@
         <aside class="sidebar">
             <!-- ÆNDRE LOGO HER -->
             <a href="index.html" style="text-decoration: none; margin-bottom: 2rem; display: block;">
-                <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 60px; height: 60px; border-radius: 12px; margin: 0 auto; display: block;">
+                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 60px; height: 60px; border-radius: 12px; margin: 0 auto; display: block;">
             </a>
             <div class="profile-pic-container">
                 <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profilbillede">
@@ -608,7 +608,14 @@
                 const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
                 if (staffIds.includes(discordId)) {
                     localStorage.setItem('isStaff', 'true');
+                } else {
+                    localStorage.setItem('isStaff', 'false');
                 }
+            } else {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('isStaff');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
             }
 
             if (!session) {
@@ -665,8 +672,7 @@
             }
 
             const isStaff = localStorage.getItem('isStaff') === 'true';
-            const allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-
+            
             // Sidebar visning baseret på rolle
             if (isStaff) {
                 document.getElementById('admin-tickets-link').style.display = 'block';
@@ -676,8 +682,28 @@
                 document.getElementById('user-tickets-link').style.display = 'block';
             }
 
-            // Bruger-specifikke tickets
-            const userTickets = allTickets.filter(t => t.owner === userName || t.owner === undefined);
+            // Indlæs tickets (fra Supabase, med fallback til localStorage)
+            let allTickets = [];
+            try {
+                const { data, error } = await supabaseClient
+                    .from('tickets')
+                    .select('*');
+                
+                if (data && !error) {
+                    // Konverter data til localStorage format
+                    allTickets = data.map(t => ({
+                        id: t.ticket_id || t.id,
+                        ...t
+                    }));
+                } else {
+                    allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                }
+            } catch (err) {
+                allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            }
+
+            // Bruger-specifikke tickets (Brug email hvis muligt for bedre sikkerhed)
+            const userTickets = allTickets.filter(t => t.user_email === userEmail || t.owner === userName || t.owner === undefined);
             const ticketsList = document.getElementById('tickets-list');
             
             if (userTickets.length > 0) {

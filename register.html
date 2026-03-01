@@ -208,7 +208,7 @@
     <div class="login-container">
         <!-- ÆNDRE LOGO HER -->
         <a href="index.html" class="logo" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-            <img src="/hjemmeside SL/ChatGPT Image Feb 27, 2026, 08_26_06 PM - Copy.png" alt="Logo" class="logo-3d" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover;">
+            <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover;">
             <span>Suko Shop</span>
         </a>
         <h1 data-i18n="create-account">Opret konto</h1>
@@ -305,10 +305,15 @@
         updateLanguage(savedLang);
 
         document.getElementById('discordLogin').addEventListener('click', async () => {
+            // Sørg for at vi har en valid URL selv hvis vi kører lokalt
+            const redirectTo = window.location.origin.includes('://') 
+                ? window.location.origin + '/index.html' 
+                : window.location.href.split('register.html')[0] + 'index.html';
+
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'discord',
                 options: {
-                    redirectTo: window.location.href.split('register.html')[0] + 'index.html'
+                    redirectTo: redirectTo
                 }
             });
             if (error) alert(error.message);
