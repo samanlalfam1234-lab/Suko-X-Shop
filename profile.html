@@ -6,26 +6,26 @@
     <title>Min Konto | Suko Shop</title>
     <style>
         :root {
-            --bg: #ffffff;
-            --card-bg: #f8fbff;
-            --text-main: #000000;
-            --text-dim: #4b5563;
-            --border: rgba(0, 0, 0, 0.1);
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-dim: #64748b;
             --accent: #3b82f6;
             --accent-hover: #2563eb;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            --transition: all 0.2s ease;
+            --shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border: rgba(59, 130, 246, 0.1);
         }
 
         body.dark-theme {
             --bg: #0a0e14;
             --card-bg: #111821;
-            --text-main: #ffffff;
+            --text-main: #f1f5f9;
             --text-dim: #94a3b8;
-            --border: rgba(255, 255, 255, 0.05);
             --accent: #3b82f6;
             --accent-hover: #60a5fa;
             --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            --border: rgba(255, 255, 255, 0.05);
         }
 
         @keyframes slideIn {
@@ -76,8 +76,8 @@
 
         /* 3D Logo Styling */
         .logo-3d {
-            filter: drop-shadow(1px 1px 0px var(--accent)) 
-                    drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(2px 2px 0px var(--accent)) 
+                    drop-shadow(4px 4px 8px rgba(59, 130, 246, 0.3));
             transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
             transition: var(--transition);
         }
@@ -138,20 +138,24 @@
         #file-input { display: none; }
 
         .sidebar h2 { 
-            font-size: 1.2rem; 
+            font-size: 1rem; 
             font-weight: 700; 
             margin-top: 1rem;
             letter-spacing: -0.01em;
             word-break: break-all;
             color: var(--text-main);
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .sidebar p { 
-            font-size: 0.85rem; 
+            font-size: 0.75rem; 
             color: var(--text-dim); 
             margin-bottom: 1.5rem; 
             word-break: break-all;
             opacity: 0.8;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .side-nav { text-align: left; border-top: 1px solid var(--border); padding-top: 1.5rem; }
@@ -337,17 +341,102 @@
 
         .toast.success { border-left: 4px solid #27ae60; border-color: #27ae60; }
         .toast.error { border-left: 4px solid #ff4444; border-color: #ff4444; }
+        /* Dine Tickets New Design Styles */
+        .tickets-container-minimal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .minimal-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .empty-state-text {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .plus-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .plus-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .ticket-item-card {
+            width: 100%;
+            background: rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .ticket-item-card:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">Bekræft</h2>
+            <p id="modal-message">Er du sikker?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="confirm-cancel">Annuller</button>
+                <button class="modal-btn modal-btn-confirm" id="confirm-ok">Slet</button>
+            </div>
+        </div>
+    </div>
 
     <div class="toast-container" id="toastContainer"></div>
 
     <div class="profile-wrapper">
         <aside class="sidebar">
-            <!-- ÆNDRE LOGO HER -->
             <a href="index.html" style="text-decoration: none; margin-bottom: 2rem; display: block;">
-                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 60px; height: 60px; border-radius: 12px; margin: 0 auto; display: block;">
+                <!-- LOGO REMOVED -->
             </a>
             <div class="profile-pic-container">
                 <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profilbillede">
@@ -385,15 +474,25 @@
                         <span data-i18n="info-date">Februar 2026</span>
                     </div>
                 </div>
+
+                <!-- Tickets Minimal View integrated into Info Section -->
+                <div class="tickets-container-minimal" style="margin-top: 4rem;">
+                    <div class="minimal-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                        DINE TICKETS
+                    </div>
+                    <div id="tickets-list-minimal" style="width: 100%;">
+                        <div class="empty-state-text">Du har ingen aktive tickets.</div>
+                        <a href="tickets.html" class="plus-btn">+</a>
+                    </div>
+                </div>
             </section>
 
-            <!-- Tickets Section (User) -->
+            <!-- Tickets Section (Hidden by default, used when clicking 'Mine Tickets' tab) -->
             <section id="tickets-section" class="content-section">
-                <h3 class="section-title" data-i18n="tickets-title">Mine Tickets</h3>
-                <div id="tickets-list">
-                    <p style="color: var(--text-dim);" data-i18n="no-tickets">Du har ingen aktive tickets.</p>
+                <div class="tickets-container-minimal">
+                    <!-- This will be populated by the same render function -->
                 </div>
-                <a href="tickets.html" class="btn-save" style="display: block; text-align: center; text-decoration: none; margin-top: 2rem;" data-i18n="create-ticket">Opret ny ticket</a>
             </section>
 
             <!-- Admin Tickets Section -->
@@ -490,7 +589,11 @@
                 'ticket-delete': 'Delete Ticket',
                 'settings-saved': 'Settings saved successfully!',
                 'save-error': 'Error saving settings',
-                'pic-success': 'Profile picture updated successfully!'
+                'pic-success': 'Profile picture updated successfully!',
+                'confirm-title': 'Confirm deletion',
+                'confirm-msg': 'Are you sure you want to delete this ticket permanently?',
+                'confirm-ok': 'Delete permanently',
+                'confirm-cancel': 'Cancel'
             },
             'da': {
                 'change-pic': 'Skift billede',
@@ -525,9 +628,50 @@
                 'ticket-delete': 'Slet Ticket',
                 'settings-saved': 'Indstillinger gemt succesfuldt!',
                 'save-error': 'Fejl ved gemning af indstillinger',
-                'pic-success': 'Profilbillede opdateret succesfuldt!'
+                'pic-success': 'Profilbillede opdateret succesfuldt!',
+                'confirm-title': 'Bekræft sletning',
+                'confirm-msg': 'Er du sikker på, at du vil slette denne ticket permanent?',
+                'confirm-ok': 'Slet permanent',
+                'confirm-cancel': 'Annuller'
             }
         };
+
+        function showConfirm() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('modal-title');
+            const msg = document.getElementById('modal-message');
+            const okBtn = document.getElementById('confirm-ok');
+            const cancelBtn = document.getElementById('confirm-cancel');
+
+            if (!modal) return Promise.resolve(confirm('Er du sikker?'));
+
+            title.textContent = translations[currentLang]['confirm-title'] || 'Bekræft';
+            msg.textContent = translations[currentLang]['confirm-msg'] || 'Er du sikker?';
+            okBtn.textContent = translations[currentLang]['confirm-ok'] || 'OK';
+            cancelBtn.textContent = translations[currentLang]['confirm-cancel'] || 'Annuller';
+
+            modal.style.display = 'flex';
+
+            return new Promise((resolve) => {
+                const handleOk = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(true);
+                };
+                const handleCancel = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(false);
+                };
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
@@ -618,6 +762,15 @@
                 localStorage.removeItem('userEmail');
             }
 
+            // Skjul nuværende side i menuen
+            const currentPage = window.location.pathname.split("/").pop() || 'profile.html';
+            document.querySelectorAll('#nav-menu a').forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (linkPage === currentPage) {
+                    link.style.display = 'none';
+                }
+            });
+
             if (!session) {
                 window.location.href = 'login.html';
                 return;
@@ -682,54 +835,90 @@
                 document.getElementById('user-tickets-link').style.display = 'block';
             }
 
-            // Indlæs tickets (fra Supabase, med fallback til localStorage)
+            // Indlæs tickets (fra Supabase og localStorage og merge dem)
             let allTickets = [];
+            let localTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            
             try {
                 const { data, error } = await supabaseClient
                     .from('tickets')
                     .select('*');
                 
                 if (data && !error) {
-                    // Konverter data til localStorage format
-                    allTickets = data.map(t => ({
+                    const supabaseTickets = data.map(t => ({
                         id: t.ticket_id || t.id,
                         ...t
                     }));
+                    
+                    allTickets = [...supabaseTickets];
+                    localTickets.forEach(lt => {
+                        if (!allTickets.find(st => st.id === lt.id)) {
+                            allTickets.push(lt);
+                        }
+                    });
                 } else {
-                    allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                    allTickets = localTickets;
                 }
             } catch (err) {
-                allTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                allTickets = localTickets;
             }
 
-            // Bruger-specifikke tickets (Brug email hvis muligt for bedre sikkerhed)
             const userTickets = allTickets.filter(t => t.user_email === userEmail || t.owner === userName || t.owner === undefined);
-            const ticketsList = document.getElementById('tickets-list');
+            const ticketsList = document.getElementById('tickets-list-minimal');
+            const currentLang = localStorage.getItem('language') || 'en';
             
             if (userTickets.length > 0) {
                 ticketsList.innerHTML = '';
                 userTickets.forEach(t => {
-                    const currentLang = localStorage.getItem('language') || 'en';
-                    const div = document.createElement('div');
-                    div.style.padding = '1rem';
-                    div.style.borderBottom = '1px solid var(--border)';
-                    div.style.marginBottom = '1rem';
-                    div.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong>${t.subject}</strong>
-                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : 'var(--accent)'}; color: white; padding: 2px 8px; border-radius: 10px;">${t.status}</span>
-                        </div>
-                        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">${t.message.substring(0, 100)}${t.message.length > 100 ? '...' : ''}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-                            <div style="font-size: 0.75rem; color: var(--text-dim);">${translations[currentLang]['ticket-id']}: ${t.id} • ${translations[currentLang]['ticket-date']}: ${t.date}</div>
-                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px;">${translations[currentLang]['ticket-open']}</a>
-                        </div>
-                    `;
+                    const div = document.createElement('a');
+                    div.href = `ticket-view.html?id=${encodeURIComponent(t.id)}`;
+                    div.className = 'ticket-item-card';
+                    
+                    const left = document.createElement('div');
+                    left.style.textAlign = 'left';
+                    
+                    const subject = document.createElement('div');
+                    subject.style.fontWeight = '700';
+                    subject.style.fontSize = '1.1rem';
+                    subject.textContent = t.subject;
+                    
+                    const date = document.createElement('div');
+                    date.style.fontSize = '0.8rem';
+                    date.style.color = 'var(--text-dim)';
+                    date.style.marginTop = '4px';
+                    date.textContent = t.date;
+                    
+                    left.appendChild(subject);
+                    left.appendChild(date);
+                    
+                    const right = document.createElement('div');
+                    const status = document.createElement('span');
+                    status.style.fontSize = '0.7rem';
+                    status.style.background = t.status === 'Lukket' ? '#ff4444' : '#27ae60';
+                    status.style.color = 'white';
+                    status.style.padding = '4px 12px';
+                    status.style.borderRadius = '20px';
+                    status.style.fontWeight = '800';
+                    status.textContent = t.status.toUpperCase();
+                    
+                    right.appendChild(status);
+                    
+                    div.appendChild(left);
+                    div.appendChild(right);
                     ticketsList.appendChild(div);
                 });
+
+                const plus = document.createElement('a');
+                plus.href = 'tickets.html';
+                plus.className = 'plus-btn';
+                plus.style.margin = '20px auto 0';
+                plus.textContent = '+';
+                ticketsList.appendChild(plus);
             } else {
-                const currentLang = localStorage.getItem('language') || 'en';
-                ticketsList.innerHTML = `<p style="color: var(--text-dim);">${translations[currentLang]['no-tickets']}</p>`;
+                ticketsList.innerHTML = `
+                    <div class="empty-state-text">${translations[currentLang]['no-tickets']}</div>
+                    <a href="tickets.html" class="plus-btn">+</a>
+                `;
             }
 
             // Admin-specifikke tickets (Staff visning)
@@ -748,26 +937,97 @@
                     div.style.borderRadius = '8px';
                     div.style.marginBottom = '1.5rem';
                     div.style.background = 'rgba(0,0,0,0.02)';
-                    div.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim);">${translations[currentLang]['ticket-user']}: ${t.owner || 'Ukendt'}</span>
-                            <span style="font-size: 0.8rem; background: ${t.status === 'Lukket' ? '#ff4444' : '#27ae60'}; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">${t.status}</span>
-                        </div>
-                        <h4 style="margin-bottom: 0.5rem;">${t.subject}</h4>
-                        <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-dim);">${t.message}</p>
-                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                            <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" style="font-size: 0.8rem; background: var(--accent); color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 600;">${translations[currentLang]['ticket-chat']}</a>
-                            <button onclick="closeTicket('${t.id}')" style="font-size: 0.8rem; background: #ff4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer;">${translations[currentLang]['ticket-delete']}</button>
-                        </div>
-                    `;
+                    
+                    const header = document.createElement('div');
+                    header.style.display = 'flex';
+                    header.style.justifyContent = 'space-between';
+                    header.style.alignItems = 'center';
+                    header.style.marginBottom = '1rem';
+                    
+                    const userSpan = document.createElement('span');
+                    userSpan.style.fontSize = '0.75rem';
+                    userSpan.style.fontWeight = '800';
+                    userSpan.style.color = 'var(--text-dim)';
+                    userSpan.textContent = `${translations[currentLang]['ticket-user']}: ${t.owner || 'Ukendt'}`;
+                    
+                    const statusSpan = document.createElement('span');
+                    statusSpan.style.fontSize = '0.8rem';
+                    statusSpan.style.background = t.status === 'Lukket' ? '#ff4444' : '#27ae60';
+                    statusSpan.style.color = 'white';
+                    statusSpan.style.padding = '4px 12px';
+                    statusSpan.style.borderRadius = '20px';
+                    statusSpan.style.fontWeight = '600';
+                    statusSpan.textContent = t.status;
+                    
+                    header.appendChild(userSpan);
+                    header.appendChild(statusSpan);
+                    
+                    const h4 = document.createElement('h4');
+                    h4.style.marginBottom = '0.5rem';
+                    h4.textContent = t.subject;
+                    
+                    const p = document.createElement('p');
+                    p.style.fontSize = '0.9rem';
+                    p.style.marginBottom = '1rem';
+                    p.style.color = 'var(--text-dim)';
+                    p.textContent = (t.message || '').substring(0, 100) + ((t.message || '').length > 100 ? '...' : '');
+                    
+                    const actions = document.createElement('div');
+                    actions.style.display = 'flex';
+                    actions.style.gap = '10px';
+                    actions.style.justifyContent = 'flex-end';
+                    
+                    const link = document.createElement('a');
+                    link.href = `ticket-view.html?id=${encodeURIComponent(t.id)}`;
+                    link.style.fontSize = '0.8rem';
+                    link.style.background = 'var(--accent)';
+                    link.style.color = 'white';
+                    link.style.textDecoration = 'none';
+                    link.style.padding = '8px 16px';
+                    link.style.borderRadius = '4px';
+                    link.style.fontWeight = '600';
+                    link.textContent = translations[currentLang]['ticket-chat'];
+                    
+                    const delBtn = document.createElement('button');
+                    delBtn.onclick = () => closeTicket(t.id);
+                    delBtn.style.fontSize = '0.8rem';
+                    delBtn.style.background = '#ff4444';
+                    delBtn.style.color = 'white';
+                    delBtn.style.border = 'none';
+                    delBtn.style.padding = '8px 16px';
+                    delBtn.style.borderRadius = '4px';
+                    delBtn.style.fontWeight = '600';
+                    delBtn.style.cursor = 'pointer';
+                    delBtn.textContent = translations[currentLang]['ticket-delete'];
+                    
+                    actions.appendChild(link);
+                    actions.appendChild(delBtn);
+                    
+                    div.appendChild(header);
+                    div.appendChild(h4);
+                    div.appendChild(p);
+                    div.appendChild(actions);
                     adminList.appendChild(div);
                 });
             }
         }
 
         // Funktion til at slette en ticket
-        function closeTicket(id) {
-            if (confirm('Er du sikker på, at du vil slette denne ticket permanent?')) {
+        async function closeTicket(id) {
+            const confirmed = await showConfirm();
+            if (confirmed) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('tickets')
+                        .delete()
+                        .match({ ticket_id: id });
+                    
+                    if (error) console.error("Error deleting from Supabase:", error);
+                } catch (err) {
+                    console.error("Supabase deletion error:", err);
+                }
+
+                // Altid slet fra localStorage også
                 const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
                 const filteredTickets = tickets.filter(t => t.id !== id);
                 localStorage.setItem('userTickets', JSON.stringify(filteredTickets));

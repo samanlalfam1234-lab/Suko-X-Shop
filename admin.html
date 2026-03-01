@@ -6,15 +6,15 @@
     <title>Staff Panel | Suko Shop</title>
     <style>
         :root {
-            --bg: #e1e7ed;
-            --card-bg: #f8fbff;
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-dim: #64748b;
             --accent: #3b82f6;
             --accent-hover: #2563eb;
             --danger: #ef4444;
-            --border: rgba(0, 0, 0, 0.05);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --border: rgba(59, 130, 246, 0.1);
+            --shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -72,8 +72,8 @@
 
         /* 3D Logo Styling */
         .logo-3d {
-            filter: drop-shadow(1px 1px 0px var(--accent)) 
-                    drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(2px 2px 0px var(--accent)) 
+                    drop-shadow(4px 4px 8px rgba(59, 130, 246, 0.3));
             transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
             transition: var(--transition);
         }
@@ -336,21 +336,147 @@
             font-size: 1.1rem;
             font-weight: 500;
         }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            min-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left: 4px solid #27ae60; border-color: #27ae60; }
+        .toast.error { border-left: 4px solid #ff4444; border-color: #ff4444; }
+
+        /* Modal Styling */
+        #confirmModal.modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 11000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .modal p {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            flex: 1;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .modal-btn-confirm {
+            background: #ff4444;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body>
 
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">Bekræft</h2>
+            <p id="modal-message">Er du sikker?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="confirm-cancel">Annuller</button>
+                <button class="modal-btn modal-btn-confirm" id="confirm-ok">Slet</button>
+            </div>
+        </div>
+    </div>
+
     <div class="admin-wrapper">
+        <div id="toastContainer" class="toast-container"></div>
         <header>
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <!-- ÆNDRE LOGO HER -->
-                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
+                <!-- LOGO REMOVED -->
                 <div>
                     <a href="index.html" class="back-link" data-i18n="back-link">← Tilbage til siden</a>
                     <h1 data-i18n="staff-panel">Staff Panel</h1>
                 </div>
             </div>
-            <div id="admin-name">Staff Member</div>
+            <a href="profile.html" id="admin-name" style="text-decoration: none; color: white;">Konto</a>
         </header>
 
         <div class="stats-bar">
@@ -376,8 +502,61 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showConfirm() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('modal-title');
+            const msg = document.getElementById('modal-message');
+            const okBtn = document.getElementById('confirm-ok');
+            const cancelBtn = document.getElementById('confirm-cancel');
+
+            title.textContent = translations[currentLang]['confirm-title'];
+            msg.textContent = translations[currentLang]['confirm-msg'];
+            okBtn.textContent = translations[currentLang]['confirm-ok'];
+            cancelBtn.textContent = translations[currentLang]['confirm-cancel'];
+
+            modal.style.display = 'flex';
+
+            return new Promise((resolve) => {
+                const handleOk = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(true);
+                };
+                const handleCancel = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(false);
+                };
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
+
         const translations = {
             'en': {
+                'confirm-title': 'Confirm deletion',
+                'confirm-msg': 'Are you sure you want to delete this ticket permanently?',
+                'confirm-ok': 'Delete permanently',
+                'confirm-cancel': 'Cancel',
                 'back-link': '← Back to site',
                 'staff-panel': 'Staff Panel',
                 'open-tickets': 'Open Tickets',
@@ -393,6 +572,10 @@
                 'unknown': 'Unknown'
             },
             'da': {
+                'confirm-title': 'Bekræft sletning',
+                'confirm-msg': 'Er du sikker på at du vil slette denne ticket permanent?',
+                'confirm-ok': 'Slet permanent',
+                'confirm-cancel': 'Annuller',
                 'back-link': '← Tilbage til siden',
                 'staff-panel': 'Staff Panel',
                 'open-tickets': 'Åbne Tickets',
@@ -420,11 +603,27 @@
             loadAdminData(); // Reload data with new labels
         }
 
-        // Sikkerhed: Tjek om brugeren er staff
-        if (localStorage.getItem('isStaff') !== 'true') {
-            const currentLang = localStorage.getItem('language') || 'en';
-            alert(translations[currentLang]['access-denied']);
-            window.location.href = 'index.html';
+        async function checkStaff() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+                const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                } else {
+                    localStorage.setItem('isStaff', 'false');
+                }
+            }
+
+            if (localStorage.getItem('isStaff') !== 'true') {
+                const currentLang = localStorage.getItem('language') || 'en';
+                showToast(translations[currentLang]['access-denied'], 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                loadAdminData();
+            }
         }
 
         const currentTheme = localStorage.getItem('theme');
@@ -435,6 +634,7 @@
 
         const savedLang = localStorage.getItem('language') || 'en';
         updateLanguage(savedLang);
+        checkStaff();
 
         function getToday() {
             const today = new Date();
@@ -442,23 +642,31 @@
         }
 
         async function loadAdminData() {
-            let tickets = [];
+            let supabaseTickets = [];
+            let localTickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            
             try {
                 const { data, error } = await supabaseClient
                     .from('tickets')
                     .select('*');
                 
                 if (data && !error) {
-                    tickets = data.map(t => ({
+                    supabaseTickets = data.map(t => ({
                         id: t.ticket_id || t.id,
                         ...t
                     }));
-                } else {
-                    tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
                 }
             } catch (err) {
-                tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+                console.error("Supabase load error:", err);
             }
+
+            // Merge: Supabase takes priority if IDs match
+            let tickets = [...supabaseTickets];
+            localTickets.forEach(lt => {
+                if (!tickets.find(st => st.id === lt.id)) {
+                    tickets.push(lt);
+                }
+            });
 
             const list = document.getElementById('admin-tickets-list');
             const currentLang = localStorage.getItem('language') || 'en';
@@ -481,24 +689,61 @@
                 const div = document.createElement('div');
                 div.className = 'ticket-item';
                 const messagePreview = (t.message || '').substring(0, 80) + ((t.message || '').length > 80 ? '...' : '');
-                div.innerHTML = `
-                    <div class="ticket-info">
-                        <div class="ticket-meta">
-                            <span class="status-badge" style="background: ${t.status === 'Lukket' ? '#999' : '#34c759'}">${t.status}</span>
-                            <span><strong>${translations[currentLang]['id']}:</strong> ${t.id}</span>
-                            <span><strong>${translations[currentLang]['user']}:</strong> ${t.owner || translations[currentLang]['unknown']}</span>
-                            <span><strong>${translations[currentLang]['date']}:</strong> ${t.date}</span>
-                        </div>
-                        <h2>${t.subject}</h2>
-                        <div class="ticket-message">
-                            ${messagePreview}
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <a href="ticket-view.html?id=${encodeURIComponent(t.id)}" class="btn btn-view">${translations[currentLang]['btn-view']}</a>
-                        <button onclick="deleteTicket('${t.id}')" class="btn btn-delete">${translations[currentLang]['btn-delete']}</button>
-                    </div>
-                `;
+                
+                const ticketInfo = document.createElement('div');
+                ticketInfo.className = 'ticket-info';
+                
+                const ticketMeta = document.createElement('div');
+                ticketMeta.className = 'ticket-meta';
+                
+                const statusBadge = document.createElement('span');
+                statusBadge.className = 'status-badge';
+                statusBadge.style.background = t.status === 'Lukket' ? '#999' : '#34c759';
+                statusBadge.textContent = t.status;
+                
+                const idSpan = document.createElement('span');
+                idSpan.innerHTML = `<strong>${translations[currentLang]['id']}:</strong> ${t.id}`;
+                
+                const userSpan = document.createElement('span');
+                userSpan.innerHTML = `<strong>${translations[currentLang]['user']}:</strong> ${t.owner || translations[currentLang]['unknown']}`;
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.innerHTML = `<strong>${translations[currentLang]['date']}:</strong> ${t.date}`;
+                
+                ticketMeta.appendChild(statusBadge);
+                ticketMeta.appendChild(idSpan);
+                ticketMeta.appendChild(userSpan);
+                ticketMeta.appendChild(dateSpan);
+                
+                const h2 = document.createElement('h2');
+                h2.textContent = t.subject;
+                
+                const ticketMsg = document.createElement('div');
+                ticketMsg.className = 'ticket-message';
+                ticketMsg.textContent = messagePreview;
+                
+                ticketInfo.appendChild(ticketMeta);
+                ticketInfo.appendChild(h2);
+                ticketInfo.appendChild(ticketMsg);
+                
+                const actions = document.createElement('div');
+                actions.className = 'actions';
+                
+                const viewBtn = document.createElement('a');
+                viewBtn.href = `ticket-view.html?id=${encodeURIComponent(t.id)}`;
+                viewBtn.className = 'btn btn-view';
+                viewBtn.textContent = translations[currentLang]['btn-view'];
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.onclick = () => deleteTicket(t.id);
+                deleteBtn.className = 'btn btn-delete';
+                deleteBtn.textContent = translations[currentLang]['btn-delete'];
+                
+                actions.appendChild(viewBtn);
+                actions.appendChild(deleteBtn);
+                
+                div.appendChild(ticketInfo);
+                div.appendChild(actions);
                 list.appendChild(div);
             });
         }
@@ -525,7 +770,8 @@
         */
 
         async function deleteTicket(id) {
-            if (!confirm('Er du sikker på at du vil slette denne ticket permanent?')) return;
+            const confirmed = await showConfirm();
+            if (!confirmed) return;
             
             try {
                 const { error } = await supabaseClient
@@ -533,17 +779,16 @@
                     .delete()
                     .match({ ticket_id: id });
 
-                if (error) {
-                    // Fallback to localStorage
-                    let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-                    tickets = tickets.filter(t => t.id !== id);
-                    localStorage.setItem('userTickets', JSON.stringify(tickets));
-                }
+                if (error) console.error("Supabase delete error:", error);
             } catch (err) {
-                let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-                tickets = tickets.filter(t => t.id !== id);
-                localStorage.setItem('userTickets', JSON.stringify(tickets));
+                console.error("Supabase delete exception:", err);
             }
+
+            // Always also delete from localStorage
+            let tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
+            tickets = tickets.filter(t => t.id !== id);
+            localStorage.setItem('userTickets', JSON.stringify(tickets));
+            
             loadAdminData();
         }
     </script>

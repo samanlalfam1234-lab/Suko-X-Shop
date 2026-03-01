@@ -20,42 +20,67 @@
         body.dark-theme {
             --bg: #0a0e14;
             --card-bg: #111821;
-            --text-main: #e0e6ed;
-            --text-dim: #8492a6;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
             --accent: #3b82f6;
-            --accent-light: rgba(59, 130, 246, 0.1);
-            --border: #1f2937;
-            --shadow: 0 10px 30px rgba(0,0,0,0.4);
+            --accent-light: rgba(59, 130, 246, 0.15);
+            --border: rgba(255, 255, 255, 0.05);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(-45deg, #0a0e14, #111821, #05080c, #111821);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: var(--transition); }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(-45deg, #e1e7ed, #f0f4f8, #dbe4ee, #e1e7ed);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: var(--text-main);
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
         header {
-            padding: 1.2rem 5%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(var(--bg), 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+            background: var(--card-bg);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            width: 100%;
         }
 
-        .logo { font-size: 1.2rem; font-weight: 600; text-decoration: none; color: var(--text-main); }
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+        }
 
         /* 3D Logo Styling */
         .logo-3d {
-            filter: drop-shadow(1px 1px 0px var(--accent)) 
-                    drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(2px 2px 0px var(--accent)) 
+                    drop-shadow(4px 4px 8px rgba(59, 130, 246, 0.3));
             transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
             transition: var(--transition);
         }
@@ -63,6 +88,59 @@
         .logo-3d:hover {
             transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.05);
             filter: drop-shadow(2px 2px 8px rgba(59, 130, 246, 0.4));
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+            background: var(--bg);
+            border-color: var(--text-main);
+            box-shadow: var(--shadow);
+            color: var(--accent);
+        }
+
+        /* Specifik styling til Staff knappen */
+        .staff-btn {
+            border-color: rgba(204, 0, 0, 0.3) !important;
+            color: #cc0000 !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            padding: 0.6rem 1rem !important;
+            border-radius: 10px !important;
+            margin-left: 10px;
+        }
+
+        .staff-btn:hover {
+            background: #cc0000 !important;
+            color: white !important;
+            border-color: #cc0000 !important;
+        }
+
+        /* Specifik styling til Log ud */
+        .logout-nav-btn:hover {
+            background: #ff4444 !important;
+            color: white !important;
+            border-color: #ff4444 !important;
         }
 
         .container {
@@ -80,6 +158,7 @@
             padding: 30px;
             margin-top: 30px;
             border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .addon-list { display: flex; flex-direction: column; gap: 15px; }
@@ -93,10 +172,11 @@
             border: 1px solid var(--border);
             cursor: pointer;
             gap: 12px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .addon-item:hover { border-color: var(--accent); }
-        .addon-item.selected { border-color: var(--accent); background: rgba(0, 113, 227, 0.05); }
+        .addon-item:hover { transform: scale(1.02); border-color: var(--accent); }
+        .addon-item.selected { border-color: var(--accent); background: var(--accent-light); }
 
         .checkbox {
             width: 20px;
@@ -153,19 +233,40 @@
         .back-link { display: block; margin-bottom: 40px; color: var(--text-dim); text-decoration: none; font-size: 14px; }
 
         footer { padding: 40px 5%; text-align: center; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); }
+
+        /* Regn effekt */
+        .rain-drop {
+            position: fixed;
+            top: -10px;
+            width: 2px;
+            height: 10px;
+            background: var(--accent);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
     <header>
-        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
-            <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;">
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
             <div class="logo">Suko Shop</div>
         </a>
-        <nav id="nav-menu" style="display: flex; align-items: center; gap: 15px;">
-            <a href="index.html" style="text-decoration: none; color: var(--text-main); font-size: 0.75rem; font-weight: 600;" data-i18n="nav-home">Forside</a>
-            <a href="profile.html" id="account-link" style="text-decoration: none; color: var(--text-main); font-size: 0.75rem; font-weight: 600;" data-i18n="nav-account">Konto</a>
-            <a href="admin.html" id="admin-tickets-link" style="display: none; color: #cc0000; text-decoration: none; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1rem; border: 1px solid rgba(204,0,0,0.2); border-radius: 10px;">Staff Panel</a>
+        <nav id="nav-menu">
+            <a href="pricing.html" data-i18n="nav-home">Store</a>
+            <a href="tos.html" data-i18n="nav-rules">Regler</a>
+            <a href="login.html" id="login-link" data-i18n="nav-login">Log ind</a>
+            <a href="profile.html" id="account-link" style="display: none;" data-i18n="nav-account">Konto</a>
+            <a href="#" id="logout-link" class="logout-nav-btn" style="display: none;" data-i18n="nav-logout">Log ud</a>
         </nav>
     </header>
 
@@ -209,6 +310,27 @@
     </footer>
 
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Regn effekt logik
+        function createRain() {
+            const drop = document.createElement('div');
+            drop.className = 'rain-drop';
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+            drop.style.opacity = Math.random() * 0.5;
+            document.body.appendChild(drop);
+            
+            setTimeout(() => {
+                drop.remove();
+            }, 1000);
+        }
+
+        setInterval(createRain, 50);
+
         const translations = {
             'en': {
                 'back-link': '← Back to Store',
@@ -220,6 +342,11 @@
                 'bot-commands': 'Custom Commands',
                 'addon-wishes': 'Your wishes / you can write your wishes on the next page',
                 'submit-btn': 'Continue to order',
+                'nav-home': 'Store',
+                'nav-rules': 'Rules',
+                'nav-login': 'Log In',
+                'nav-account': 'Account',
+                'nav-logout': 'Log Out',
                 'footer-copy': '© 2026 Suko Shop. All rights reserved.'
             },
             'da': {
@@ -232,6 +359,11 @@
                 'bot-commands': 'Custom Commands',
                 'addon-wishes': 'Dine ønsker/du kan skrive dine ønsker på næste side',
                 'submit-btn': 'Fortsæt til bestilling',
+                'nav-home': 'Store',
+                'nav-rules': 'Regler',
+                'nav-login': 'Log ind',
+                'nav-account': 'Konto',
+                'nav-logout': 'Log ud',
                 'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.'
             }
         };
@@ -254,27 +386,97 @@
         }
 
         const savedLang = localStorage.getItem('language') || 'en';
-        
+        updateLanguage(savedLang);
+
+        // Supabase session check
+        async function checkSupabaseSession() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            updateUI(session);
+        }
+
+        // Lyt efter auth ændringer
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                updateUI(session);
+            } else if (event === 'SIGNED_OUT') {
+                updateUI(null);
+            }
+        });
+
+        function updateUI(session) {
+            const loginLink = document.getElementById('login-link');
+            const accountLink = document.getElementById('account-link');
+            const logoutLink = document.getElementById('logout-link');
+            const navMenu = document.getElementById('nav-menu');
+
+            // Skjul nuværende side i menuen
+            const currentPage = window.location.pathname.split("/").pop() || 'bot-custom.html';
+            document.querySelectorAll('#nav-menu a').forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (linkPage === currentPage) {
+                    link.style.display = 'none';
+                }
+            });
+
+            const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
+
+            if (session && session.user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                } else {
+                    localStorage.setItem('isStaff', 'false');
+                }
+            } else {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('isStaff');
+            }
+
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const isStaff = localStorage.getItem('isStaff') === 'true';
+            const lang = localStorage.getItem('language') || 'en';
+
+            if (isLoggedIn) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (accountLink) {
+                    accountLink.style.display = 'flex';
+                    accountLink.textContent = translations[lang]['nav-account'];
+                }
+                if (logoutLink) logoutLink.style.display = 'flex';
+
+                if (isStaff && !document.querySelector('.staff-btn')) {
+                    const adminBtn = document.createElement('a');
+                    adminBtn.href = 'admin.html';
+                    adminBtn.className = 'staff-btn';
+                    adminBtn.textContent = 'Staff Panel';
+                    navMenu.appendChild(adminBtn);
+                }
+
+                if (logoutLink) {
+                    logoutLink.onclick = async (e) => {
+                        e.preventDefault();
+                        await supabaseClient.auth.signOut();
+                        location.reload();
+                    };
+                }
+            } else {
+                if (loginLink) loginLink.style.display = 'flex';
+                if (accountLink) accountLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = 'none';
+                const staffBtn = document.querySelector('.staff-btn');
+                if (staffBtn) staffBtn.remove();
+            }
+        }
+
+        checkSupabaseSession();
+
         let selectedAddons = {
             'bot-ticket': false,
             'bot-welcome': false,
             'bot-commands': false,
             'bot-wishes': false
         };
-
-        updateLanguage(savedLang);
-
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        const isStaff = localStorage.getItem('isStaff') === 'true';
-        const accountLink = document.getElementById('account-link');
-        const adminLink = document.getElementById('admin-tickets-link');
-
-        if (!isLoggedIn) {
-            accountLink.textContent = savedLang === 'da' ? 'Log ind' : 'Log In';
-            accountLink.href = 'login.html';
-        } else if (isStaff) {
-            adminLink.style.display = 'inline-block';
-        }
 
         function toggleAddon(addon, element) {
             selectedAddons[addon] = !selectedAddons[addon];
@@ -285,11 +487,9 @@
         function updatePrice() {
             const currentLang = localStorage.getItem('language') || 'en';
             let totalPrice = 45;
-            
             if (selectedAddons['bot-ticket']) totalPrice += 10;
             if (selectedAddons['bot-welcome']) totalPrice += 5;
             if (selectedAddons['bot-commands']) totalPrice += 15;
-            if (selectedAddons['bot-wishes']) totalPrice += 0;
             
             const totalUSD = Math.round(totalPrice / 7);
             const btnText = translations[currentLang]['submit-btn'];
@@ -297,19 +497,19 @@
         }
 
         function submitBot() {
-            const currentLang = localStorage.getItem('language') || 'en';
-            
             let addonsList = [];
+            if (selectedAddons['bot-ticket']) addonsList.push('Ticket System');
+            if (selectedAddons['bot-welcome']) addonsList.push('Welcome Message');
+            if (selectedAddons['bot-commands']) addonsList.push('Custom Commands');
+            if (selectedAddons['bot-wishes']) addonsList.push('Other wishes');
+            
             let totalPrice = 45;
-
-            if (selectedAddons['bot-ticket']) { addonsList.push('Ticket System (+10 kr)'); totalPrice += 10; }
-            if (selectedAddons['bot-welcome']) { addonsList.push('Velkomstbesked (+5 kr)'); totalPrice += 5; }
-            if (selectedAddons['bot-commands']) { addonsList.push('Custom Commands (+15 kr)'); totalPrice += 15; }
-            if (selectedAddons['bot-wishes']) { addonsList.push('Specielle ønsker (Gratis)'); }
+            if (selectedAddons['bot-ticket']) totalPrice += 10;
+            if (selectedAddons['bot-welcome']) totalPrice += 5;
+            if (selectedAddons['bot-commands']) totalPrice += 15;
             
             const totalUSD = Math.round(totalPrice / 7);
-            const addonsDisplay = addonsList.length > 0 ? ' + ' + addonsList.join(', ') : '';
-            const finalChoice = 'Discord Bot' + addonsDisplay + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
+            const finalChoice = 'Discord Bot: ' + (addonsList.length > 0 ? addonsList.join(', ') : 'Base Bot') + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
             localStorage.setItem('pendingOrder', finalChoice);
             window.location.href = 'tickets.html';
         }

@@ -404,9 +404,25 @@
                 width: 100%;
             }
         }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">Bekræft</h2>
+            <p id="modal-message">Er du sikker?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="confirm-cancel">Annuller</button>
+                <button class="modal-btn modal-btn-confirm" id="confirm-ok">Slet</button>
+            </div>
+        </div>
+    </div>
 
     <div class="back-nav">
         <a href="profile.html" data-i18n="back-profile">← Tilbage til profil</a>
@@ -423,8 +439,6 @@
     <div class="ticket-view-container" id="main-view">
         <div class="ticket-header">
             <div style="display: flex; align-items: center; gap: 1.25rem;">
-                <!-- ÆNDRE LOGO HER -->
-                <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 50px; height: 50px; border-radius: 12px;">
                 <div class="ticket-header-info">
                     <h1 id="ticket-id-display">Ticket #0000</h1>
                     <p id="ticket-subject" style="font-size: 0.9rem; color: var(--text-dim);"></p>
@@ -469,7 +483,10 @@
                 'btn-closed': 'Closed',
                 'confirm-close': 'Are you sure you want to close this ticket? You cannot send more messages after closing.',
                 'customer': 'Customer',
-                'staff': 'Support Staff'
+                'staff': 'Support Staff',
+                'confirm-title': 'Close Ticket',
+                'confirm-ok': 'Close Ticket',
+                'confirm-cancel': 'Cancel'
             },
             'da': {
                 'back-profile': '← Tilbage til profil',
@@ -485,9 +502,49 @@
                 'btn-closed': 'Lukket',
                 'confirm-close': 'Er du sikker på at du vil lukke denne ticket? Du kan ikke skrive flere beskeder efter lukning.',
                 'customer': 'Kunde',
-                'staff': 'Support Staff'
+                'staff': 'Support Staff',
+                'confirm-title': 'Luk Ticket',
+                'confirm-ok': 'Luk Ticket',
+                'confirm-cancel': 'Annuller'
             }
         };
+
+        function showConfirm() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('modal-title');
+            const msg = document.getElementById('modal-message');
+            const okBtn = document.getElementById('confirm-ok');
+            const cancelBtn = document.getElementById('confirm-cancel');
+
+            if (!modal) return Promise.resolve(confirm('Er du sikker?'));
+
+            title.textContent = translations[currentLang]['confirm-title'] || 'Bekræft';
+            msg.textContent = translations[currentLang]['confirm-close'] || 'Er du sikker?';
+            okBtn.textContent = translations[currentLang]['confirm-ok'] || 'OK';
+            cancelBtn.textContent = translations[currentLang]['confirm-cancel'] || 'Annuller';
+
+            modal.style.display = 'flex';
+
+            return new Promise((resolve) => {
+                const handleOk = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(true);
+                };
+                const handleCancel = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(false);
+                };
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
 
         function updateLanguage(lang) {
             localStorage.setItem('language', lang);
@@ -516,11 +573,31 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const ticketId = urlParams.get('id');
-        const currentUser = localStorage.getItem('userName');
-        const userEmail = localStorage.getItem('userEmail');
-        const isStaff = localStorage.getItem('isStaff') === 'true';
+        let currentUser = localStorage.getItem('userName');
+        let userEmail = localStorage.getItem('userEmail');
+        let isStaff = localStorage.getItem('isStaff') === 'true';
+
+        async function updateSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', session.user.email);
+                localStorage.setItem('userName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+                
+                currentUser = localStorage.getItem('userName');
+                userEmail = localStorage.getItem('userEmail');
+                
+                const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                    isStaff = true;
+                }
+            }
+        }
 
         async function loadTicket() {
+            await updateSession();
             let ticket = null;
             try {
                 const { data, error } = await supabaseClient
@@ -531,14 +608,16 @@
                 
                 if (data && !error) {
                     ticket = {
-                        id: data.ticket_id,
+                        id: data.ticket_id || data.id,
                         ...data
                     };
-                } else {
-                    const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
-                    ticket = tickets.find(t => t.id === ticketId);
                 }
             } catch (err) {
+                console.error("Supabase load error:", err);
+            }
+
+            // Fallback to localStorage if not found in Supabase
+            if (!ticket) {
                 const tickets = JSON.parse(localStorage.getItem('userTickets') || '[]');
                 ticket = tickets.find(t => t.id === ticketId);
             }
@@ -603,10 +682,17 @@
             const chatBox = document.getElementById('chat-box');
             const div = document.createElement('div');
             div.className = `message ${role}`;
-            div.innerHTML = `
-                <div class="message-meta">${sender}</div>
-                <div class="message-content">${text}</div>
-            `;
+            
+            const meta = document.createElement('div');
+            meta.className = 'message-meta';
+            meta.textContent = sender;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            
+            div.appendChild(meta);
+            div.appendChild(content);
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -669,9 +755,8 @@
         }
 
         async function closeTicket() {
-            if (!confirm('Er du sikker på at du vil lukke denne ticket? Du kan ikke skrive flere beskeder efter lukning.')) {
-                return;
-            }
+            const confirmed = await showConfirm();
+            if (!confirmed) return;
 
             try {
                 const { error } = await supabaseClient

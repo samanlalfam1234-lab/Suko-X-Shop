@@ -160,15 +160,54 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
+        /* Toast Styling */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(17, 24, 33, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: auto;
+        }
+
+        .toast.error { border-left-color: #ff4444; }
+        .toast.success { border-left-color: #00c853; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-20px) scale(0.9); }
+        }
     </style>
 </head>
 <body>
 
     <div class="ticket-container">
-        <!-- ÆNDRE LOGO HER -->
-        <a href="index.html" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; text-decoration: none; margin-bottom: 2rem;">
-            <img src="/hjemmeside SL/SukoShop.png" alt="Logo" class="logo-3d" style="width: 70px; height: 70px; border-radius: 14px;">
-        </a>
         <h1 data-i18n="ticket-title">Opret en Ticket</h1>
         <p data-i18n="ticket-desc">Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.</p>
 
@@ -177,7 +216,7 @@
                 <label data-i18n="label-subject">Emne</label>
                 <select id="subject" required onchange="checkSubject()">
                     <option value="" data-i18n="opt-choose">Vælg emne...</option>
-                    <option value="Standard Hjemmeside (30 kr)" data-i18n="opt-standard">Køb af Standard Hjemmeside (30 kr)</option>
+                    <option value="Standard Hjemmeside (25 DKK / 4 USD)" data-i18n="opt-standard">Køb af Standard Hjemmeside (25 DKK / 4 USD)</option>
                 </select>
             </div>
 
@@ -207,13 +246,33 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Toast functionality
+        function showToast(message, type = 'info') {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.4s ease forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
         const translations = {
             'en': {
                 'ticket-title': 'Create a Ticket',
                 'ticket-desc': 'Tell us what you want to buy, and we will get back to you as soon as possible.',
                 'label-subject': 'Subject',
                 'opt-choose': 'Choose subject...',
-                'opt-standard': 'Buy Standard Website (30 DKK)',
+                'opt-standard': 'Buy Standard Website (25 DKK / 4 USD)',
                 'label-template': 'Choose Template',
                 'label-message': 'Message',
                 'message-placeholder': 'Describe your wishes or questions...',
@@ -227,7 +286,7 @@
                 'ticket-desc': 'Fortæl os hvad du ønsker at købe, så vender vi tilbage hurtigst muligt.',
                 'label-subject': 'Emne',
                 'opt-choose': 'Vælg emne...',
-                'opt-standard': 'Køb af Standard Hjemmeside (30 kr)',
+                'opt-standard': 'Køb af Standard Hjemmeside (25 DKK / 4 USD)',
                 'label-template': 'Vælg Template',
                 'label-message': 'Besked',
                 'message-placeholder': 'Beskriv dine ønsker eller spørgsmål...',
@@ -329,10 +388,16 @@
             const { data: { session }, error } = await supabaseClient.auth.getSession();
             const isMockStaff = localStorage.getItem('isStaff') === 'true';
 
-            if (!session && !isMockStaff) {
+            if (session && session.user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', session.user.email);
+                localStorage.setItem('userName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+            } else if (!isMockStaff) {
                 const lang = localStorage.getItem('language') || 'en';
-                alert(translations[lang]['alert-login']);
-                window.location.href = 'login.html';
+                showToast(translations[lang]['alert-login'], 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
             }
         }
 
@@ -378,8 +443,10 @@
                     localStorage.setItem('userTickets', JSON.stringify(tickets));
                 }
 
-                alert(translations[lang]['alert-success']);
-                window.location.href = 'profile.html';
+                showToast(translations[lang]['alert-success'], 'success');
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 2000);
             } catch (err) {
                 console.error('Submission error:', err);
                 // Fallback
@@ -387,8 +454,10 @@
                 tickets.push({ ...ticket, id: ticketId });
                 localStorage.setItem('userTickets', JSON.stringify(tickets));
                 
-                alert(translations[lang]['alert-success']);
-                window.location.href = 'profile.html';
+                showToast(translations[lang]['alert-success'], 'success');
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 2000);
             }
         });
     </script>

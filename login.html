@@ -122,7 +122,7 @@
             padding: 1rem 1.25rem;
             border: 1px solid var(--border);
             background: var(--bg);
-            color: var(--text-main);
+            color: var(--text-main) !important;
             font-size: 1rem;
             outline: none;
             border-radius: 12px;
@@ -239,9 +239,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <div class="login-container">
-        <!-- ÆNDRE LOGO HER -->
         <a href="index.html" class="logo" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-            <img src="/hjemmeside SL/SukoShop.png" alt="Logo" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; box-shadow: var(--shadow);">
             <span>Suko Shop</span>
         </a>
         <h1 data-i18n="welcome-back">Velkommen tilbage</h1>
@@ -345,10 +343,15 @@
         }
 
         document.getElementById('discordLogin').addEventListener('click', async () => {
-            // Sørg for at vi har en valid URL selv hvis vi kører lokalt
-            const redirectTo = window.location.origin.includes('://') 
-                ? window.location.origin + '/index.html' 
-                : window.location.href.split('login.html')[0] + 'index.html';
+            // Robust redirect URL handling
+            let redirectTo = window.location.origin + window.location.pathname.replace('login.html', 'index.html');
+            
+            // Check if we are running on a local file system
+            if (window.location.protocol === 'file:') {
+                console.warn("Supabase OAuth does not support file:// protocol. Please use a local server (e.g. VS Code Live Server).");
+                showToast("Discord login virker kun på en server (f.eks. Live Server i VS Code)", "error");
+                return;
+            }
 
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'discord',
