@@ -519,6 +519,12 @@
 
         // Supabase session check
         async function checkSupabaseSession() {
+            // Vent lidt hvis der er hash i URL'en (fra Discord redirect)
+            if (window.location.hash) {
+                console.log("Detecting session from hash...");
+                // Giv Supabase et øjeblik til at parse hashen
+                await new Promise(r => setTimeout(r, 500));
+            }
             const { data: { session }, error } = await supabaseClient.auth.getSession();
             updateUI(session);
         }
@@ -528,8 +534,8 @@
             console.log("Auth event:", event);
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                 updateUI(session);
-            } else if (event === 'SIGNED_OUT') {
-                updateUI(null);
+            } else if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+                updateUI(session);
             }
         });
 
@@ -562,10 +568,13 @@
                     localStorage.setItem('isStaff', 'false');
                 }
             } else {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('isStaff');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
+                // Kun fjern login hvis vi er HELT sikre på at der ikke er en igangværende redirect
+                if (!window.location.hash) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('isStaff');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                }
             }
 
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -607,7 +616,10 @@
                     location.reload();
                 };
             } else {
-                loginPopup.style.display = 'flex';
+                // Vis kun popup hvis der ikke er en hash i URL'en (undgå blink ved Discord redirect)
+                if (!window.location.hash) {
+                    loginPopup.style.display = 'flex';
+                }
                 loginLink.style.display = 'flex';
                 accountLink.style.display = 'none';
                 logoutLink.style.display = 'none';

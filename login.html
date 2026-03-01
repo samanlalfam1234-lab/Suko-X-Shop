@@ -275,6 +275,35 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Lyt efter auth ændringer (vigtigt ved OAuth redirect hvis det ender her)
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                // Gem session info
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', session.user.email);
+                localStorage.setItem('userName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+
+                const staffIds = [
+                    '1082667160461127720',
+                    '1231963657047375937',
+                    '1192535733987184680',
+                    '727130234125680641',
+                    '776463695299346442'
+                ];
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                if (staffIds.includes(discordId)) {
+                    localStorage.setItem('isStaff', 'true');
+                } else {
+                    localStorage.setItem('isStaff', 'false');
+                }
+
+                showToast(translations[localStorage.getItem('language') || 'en']['login-success'], 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }
+        });
+
         const translations = {
             'en': {
                 'welcome-back': 'Welcome Back',
