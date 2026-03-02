@@ -159,6 +159,8 @@
             margin-top: 30px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            position: relative;
+            z-index: 10;
         }
 
         .addon-list { display: flex; flex-direction: column; gap: 15px; }
@@ -173,14 +175,17 @@
             cursor: pointer;
             gap: 12px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 11;
         }
 
-        .addon-item:hover { transform: translateX(5px); border-color: var(--accent); }
+        .addon-item:hover { transform: translateX(5px); border-color: var(--accent); z-index: 12; }
         .addon-item.selected { 
             border-color: var(--accent); 
             background: var(--accent-light); 
             box-shadow: 0 0 0 1px var(--accent);
             transform: scale(1.02);
+            z-index: 13;
         }
 
         .checkbox {
@@ -227,6 +232,8 @@
             box-shadow: 0 4px 14px var(--accent-light);
             margin-top: 40px;
             width: 100%;
+            position: relative;
+            z-index: 20;
         }
 
         .btn:hover:not(:disabled) {
