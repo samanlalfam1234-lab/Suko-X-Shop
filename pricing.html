@@ -349,7 +349,7 @@
 
     <main class="store-grid">
         <!-- Standard Website -->
-        <div class="store-card" onclick="window.location.href='templates.html'">
+        <div class="store-card" onclick="selectCard('templates.html', this)">
             <div class="card-label" data-i18n="label-standard">Standard</div>
             <div class="card-title" data-i18n="title-standard">Standard Hjemmeside</div>
             <div class="card-price" data-i18n="price-standard">25 kr. / 4 USD</div>
@@ -357,7 +357,7 @@
         </div>
 
         <!-- Custom Website -->
-        <div class="store-card" onclick="window.location.href='custom.html'">
+        <div class="store-card" onclick="selectCard('custom.html', this)">
             <div class="card-label" data-i18n="label-pro">Professionel</div>
             <div class="card-title" data-i18n="title-custom">Custom Hjemmeside</div>
             <div class="card-price" id="custom-price-display" data-i18n="price-from">Fra 20 kr. / 3 USD</div>
@@ -365,7 +365,7 @@
         </div>
 
         <!-- Discord Bot -->
-        <div class="store-card" onclick="window.location.href='bot-custom.html'">
+        <div class="store-card" onclick="selectCard('bot-custom.html', this)">
             <div class="card-label" data-i18n="label-bot">Automatisering</div>
             <div class="card-title" data-i18n="title-bot">Discord Bot</div>
             <div class="card-price" data-i18n="price-bot-from">Fra 45 kr. / 6 USD</div>
@@ -387,6 +387,33 @@
         const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let selectedUrl = '';
+
+        function selectCard(url, element) {
+            // Fjern 'selected' klasse fra alle kort
+            document.querySelectorAll('.store-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Tilføj 'selected' til det klikkede kort
+            element.classList.add('selected');
+            
+            // Gem URL og vis købsknappen
+            selectedUrl = url;
+            const buyBtn = document.getElementById('final-buy-btn');
+            buyBtn.classList.add('show');
+            
+            // Scroll blødt til knappen
+            buyBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function goToTicket(event) {
+            event.preventDefault();
+            if (selectedUrl) {
+                window.location.href = selectedUrl;
+            }
+        }
 
         // Regn effekt logik
         function createRain() {
