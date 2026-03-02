@@ -5,6 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket Visning | Suko Shop</title>
     <style>
+        /* Confirm Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+        }
+
+        .modal p {
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex: 1;
+            border: none;
+            outline: none;
+        }
+
+        .modal-btn-cancel {
+            background: var(--bg);
+            color: var(--text-main);
+            border: 1px solid var(--border) !important;
+        }
+
+        .modal-btn-confirm {
+            background: #ff3b30;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
         :root {
             --bg: #e1e7ed;
             --card-bg: #f8fbff;
@@ -404,10 +483,6 @@
                 width: 100%;
             }
         }
-        .modal-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
     </style>
 </head>
 <body>
@@ -636,14 +711,15 @@
                 return;
             }
 
-            const isClosed = ticket.status === 'Lukket';
+            const isClosed = ticket.status === 'Lukket' || ticket.status === 'Closed';
+            const currentLang = localStorage.getItem('language') || 'en';
 
             document.getElementById('ticket-id-display').textContent = 'Ticket ' + ticket.id;
             document.getElementById('ticket-subject').textContent = ticket.subject;
-            document.getElementById('ticket-meta').textContent = 'Oprettet: ' + (ticket.date || 'N/A');
+            document.getElementById('ticket-meta').textContent = (translations[currentLang]['created'] || 'Created') + ': ' + (ticket.date || 'N/A');
             
             const statusBadge = document.getElementById('ticket-status');
-            statusBadge.textContent = isClosed ? 'Lukket' : 'Åben';
+            statusBadge.textContent = isClosed ? (translations[currentLang]['status-closed'] || 'Closed') : (translations[currentLang]['status-open'] || 'Open');
             statusBadge.style.background = isClosed ? '#999' : '#34c759';
 
             const closeBtn = document.getElementById('close-btn');
@@ -657,12 +733,15 @@
             chatBox.innerHTML = '';
 
             // Den oprindelige besked
-            addMessage('Kunde', ticket.message, 'customer');
+            addMessage(translations[currentLang]['customer'] || 'Customer', ticket.message, 'customer');
 
             // Replies
             if (ticket.replies) {
                 ticket.replies.forEach(r => {
-                    addMessage(r.sender, r.text, r.role);
+                    let senderName = r.sender;
+                    if (r.role === 'staff') senderName = translations[currentLang]['staff'] || 'Support Staff';
+                    if (r.role === 'customer' && (r.sender === 'Customer' || r.sender === 'Kunde')) senderName = translations[currentLang]['customer'] || 'Customer';
+                    addMessage(senderName, r.text, r.role);
                 });
             }
 
@@ -673,8 +752,11 @@
             sendBtn.disabled = isClosed;
             
             if (isClosed) {
-                textarea.placeholder = 'Denne ticket er lukket';
-                sendBtn.textContent = 'Lukket';
+                textarea.placeholder = translations[currentLang]['placeholder-closed'] || 'This ticket is closed';
+                sendBtn.textContent = translations[currentLang]['btn-closed'] || 'Closed';
+            } else {
+                textarea.placeholder = translations[currentLang]['placeholder-chat'] || 'Write your message here...';
+                sendBtn.textContent = translations[currentLang]['btn-send'] || 'Send';
             }
         }
 

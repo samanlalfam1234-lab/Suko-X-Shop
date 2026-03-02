@@ -279,7 +279,11 @@
                 'btn-send': 'Send Ticket',
                 'back-store': '← Back to Store',
                 'alert-login': 'You must be logged in to create a ticket.',
-                'alert-success': 'Your ticket has been created! We will get back to you soon.'
+                'alert-success': 'Your ticket has been created! We will get back to you soon.',
+                'status-open': 'Open',
+                'unknown': 'Unknown',
+                'sending': 'Sending...',
+                'buy-prefix': 'Buy of '
             },
             'da': {
                 'ticket-title': 'Opret en Ticket',
@@ -293,7 +297,11 @@
                 'btn-send': 'Send Ticket',
                 'back-store': '← Tilbage til Store',
                 'alert-login': 'Du skal være logget ind for at oprette en ticket.',
-                'alert-success': 'Din ticket er nu oprettet! Vi vender tilbage snart.'
+                'alert-success': 'Din ticket er nu oprettet! Vi vender tilbage snart.',
+                'status-open': 'Åben',
+                'unknown': 'Ukendt',
+                'sending': 'Sender...',
+                'buy-prefix': 'Køb af '
             }
         };
 
@@ -306,6 +314,17 @@
                 }
             });
             document.getElementById('message').placeholder = translations[lang]['message-placeholder'];
+            
+            // Update "Buy of" prefix in existing options if needed
+            const subjectSelect = document.getElementById('subject');
+            const prefix = translations[lang]['buy-prefix'];
+            for (let i = 0; i < subjectSelect.options.length; i++) {
+                const opt = subjectSelect.options[i];
+                if (opt.getAttribute('data-i18n')) continue; // Skip static translated ones
+                if (opt.value && !opt.value.includes('Standard Hjemmeside')) {
+                    opt.textContent = prefix + opt.value;
+                }
+            }
         }
 
         const currentTheme = localStorage.getItem('theme');
@@ -362,7 +381,7 @@
                 // Tjek om option allerede findes, ellers tilføj den
                 let found = false;
                 for (let i = 0; i < subjectSelect.options.length; i++) {
-                    if (subjectSelect.options[i].value.includes(pendingOrder)) {
+                    if (subjectSelect.options[i].value === pendingOrder) {
                         subjectSelect.selectedIndex = i;
                         found = true;
                         break;
@@ -372,7 +391,9 @@
                 if (!found) {
                     const newOpt = document.createElement('option');
                     newOpt.value = pendingOrder;
-                    newOpt.textContent = 'Køb af ' + pendingOrder;
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    const prefix = translations[currentLang]['buy-prefix'] || 'Buy of ';
+                    newOpt.textContent = prefix + pendingOrder;
                     newOpt.selected = true;
                     subjectSelect.appendChild(newOpt);
                 }
@@ -418,8 +439,8 @@
                 subject: finalSubject,
                 message: document.getElementById('message').value,
                 date: new Date().toLocaleDateString(),
-                status: 'Åben',
-                owner: localStorage.getItem('userName') || 'Ukendt',
+                status: translations[lang]['status-open'] || 'Åben',
+                owner: localStorage.getItem('userName') || translations[lang]['unknown'] || 'Ukendt',
                 user_email: localStorage.getItem('userEmail') || '',
                 replies: []
             };
@@ -427,7 +448,7 @@
             const btn = this.querySelector('.btn');
             const originalBtnText = btn.textContent;
             btn.disabled = true;
-            btn.textContent = 'Sender...';
+            btn.textContent = translations[lang]['sending'] || 'Sender...';
 
             try {
                 // Forsøg at gemme i Supabase
