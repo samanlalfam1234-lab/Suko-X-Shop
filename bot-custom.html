@@ -159,8 +159,6 @@
             margin-top: 30px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            position: relative;
-            z-index: 10;
         }
 
         .addon-list { display: flex; flex-direction: column; gap: 15px; }
@@ -175,17 +173,14 @@
             cursor: pointer;
             gap: 12px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 11;
         }
 
-        .addon-item:hover { transform: translateX(5px); border-color: var(--accent); z-index: 12; }
+        .addon-item:hover { transform: translateX(5px); border-color: var(--accent); }
         .addon-item.selected { 
             border-color: var(--accent); 
             background: var(--accent-light); 
             box-shadow: 0 0 0 1px var(--accent);
             transform: scale(1.02);
-            z-index: 13;
         }
 
         .checkbox {
@@ -232,8 +227,6 @@
             box-shadow: 0 4px 14px var(--accent-light);
             margin-top: 40px;
             width: 100%;
-            position: relative;
-            z-index: 20;
         }
 
         .btn:hover:not(:disabled) {
@@ -245,25 +238,6 @@
         .back-link { display: block; margin-bottom: 40px; color: var(--text-dim); text-decoration: none; font-size: 14px; }
 
         footer { padding: 40px 5%; text-align: center; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); }
-
-        /* Regn effekt */
-        .rain-drop {
-            position: fixed;
-            top: -10px;
-            width: 2px;
-            height: 10px;
-            background: var(--accent);
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 9999;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-            }
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -294,22 +268,22 @@
                 <div class="addon-item" onclick="toggleAddon('bot-ticket', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="bot-ticket">Ticket System</div></div>
-                    <div class="addon-price">+10 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-10">+10 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('bot-welcome', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="bot-welcome">Velkomstbesked</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-5">+5 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('bot-commands', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="bot-commands">Custom Commands</div></div>
-                    <div class="addon-price">+15 DKK / 2 USD</div>
+                    <div class="addon-price" data-i18n="price-15">+15 DKK / 2 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('bot-wishes', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-wishes">Dine ønsker/du kan skrive dine ønsker på næste side</div></div>
-                    <div class="addon-price">+0 DKK / 0 USD</div>
+                    <div class="addon-price" data-i18n="price-0">+0 DKK / 0 USD</div>
                 </div>
             </div>
         </div>
@@ -322,26 +296,18 @@
     </footer>
 
     <script>
+        // Globale variabler defineret først
+        let selectedAddons = {
+            'bot-ticket': false,
+            'bot-welcome': false,
+            'bot-commands': false,
+            'bot-wishes': false
+        };
+
         // Supabase configuration
         const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Regn effekt logik
-        function createRain() {
-            const drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-            drop.style.opacity = Math.random() * 0.5;
-            document.body.appendChild(drop);
-            
-            setTimeout(() => {
-                drop.remove();
-            }, 1000);
-        }
-
-        setInterval(createRain, 50);
 
         const translations = {
             'en': {
@@ -359,16 +325,20 @@
                 'nav-login': 'Log In',
                 'nav-account': 'Account',
                 'nav-logout': 'Log Out',
-                'footer-copy': '© 2026 Suko Shop. All rights reserved.'
+                'footer-copy': '© 2026 Suko Shop. All rights reserved.',
+                'price-10': '+10 DKK / 1 USD',
+                'price-5': '+5 DKK / 1 USD',
+                'price-15': '+15 DKK / 2 USD',
+                'price-0': '+0 DKK / 0 USD'
             },
             'da': {
                 'back-link': '← Tilbage til Store',
                 'title': 'Custom Discord Bot.',
                 'subtitle': 'Skræddersy din egen Discord-bot. Startpris: 45 kr. / 6 USD.',
                 'addons-title': 'Vælg dine bot-funktioner:',
-                'bot-ticket': 'Ticket System',
+                'bot-ticket': 'Ticketsystem',
                 'bot-welcome': 'Velkomstbesked',
-                'bot-commands': 'Custom Commands',
+                'bot-commands': 'Brugerdefinerede kommandoer',
                 'addon-wishes': 'Dine ønsker/du kan skrive dine ønsker på næste side',
                 'submit-btn': 'Fortsæt til bestilling',
                 'nav-home': 'Store',
@@ -376,118 +346,12 @@
                 'nav-login': 'Log ind',
                 'nav-account': 'Konto',
                 'nav-logout': 'Log ud',
-                'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.'
+                'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.',
+                'price-10': '+10 kr. / 1 USD',
+                'price-5': '+5 kr. / 1 USD',
+                'price-15': '+15 kr. / 2 USD',
+                'price-0': '+0 kr. / 0 USD'
             }
-        };
-
-        function updateLanguage(lang) {
-            localStorage.setItem('language', lang);
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.innerHTML = translations[lang][key];
-                }
-            });
-            updatePrice();
-        }
-
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark' || !currentTheme) {
-            document.body.classList.add('dark-theme');
-            if (!currentTheme) localStorage.setItem('theme', 'dark');
-        }
-
-        const savedLang = localStorage.getItem('language') || 'en';
-        updateLanguage(savedLang);
-
-        // Supabase session check
-        async function checkSupabaseSession() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
-            updateUI(session);
-        }
-
-        // Lyt efter auth ændringer
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                updateUI(session);
-            } else if (event === 'SIGNED_OUT') {
-                updateUI(null);
-            }
-        });
-
-        function updateUI(session) {
-            const loginLink = document.getElementById('login-link');
-            const accountLink = document.getElementById('account-link');
-            const logoutLink = document.getElementById('logout-link');
-            const navMenu = document.getElementById('nav-menu');
-
-            // Skjul nuværende side i menuen
-            const currentPage = window.location.pathname.split("/").pop() || 'bot-custom.html';
-            document.querySelectorAll('#nav-menu a').forEach(link => {
-                const linkPage = link.getAttribute('href');
-                if (linkPage === currentPage) {
-                    link.style.display = 'none';
-                }
-            });
-
-            const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
-
-            if (session && session.user) {
-                localStorage.setItem('isLoggedIn', 'true');
-                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
-                if (staffIds.includes(discordId)) {
-                    localStorage.setItem('isStaff', 'true');
-                } else {
-                    localStorage.setItem('isStaff', 'false');
-                }
-            } else {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('isStaff');
-            }
-
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const isStaff = localStorage.getItem('isStaff') === 'true';
-            const lang = localStorage.getItem('language') || 'en';
-
-            if (isLoggedIn) {
-                if (loginLink) loginLink.style.display = 'none';
-                if (accountLink) {
-                    accountLink.style.display = 'flex';
-                    accountLink.textContent = translations[lang]['nav-account'];
-                }
-                if (logoutLink) logoutLink.style.display = 'flex';
-
-                if (isStaff && !document.querySelector('.staff-btn')) {
-                    const adminBtn = document.createElement('a');
-                    adminBtn.href = 'admin.html';
-                    adminBtn.className = 'staff-btn';
-                    adminBtn.textContent = 'Staff Panel';
-                    navMenu.appendChild(adminBtn);
-                }
-
-                if (logoutLink) {
-                    logoutLink.onclick = async (e) => {
-                        e.preventDefault();
-                        await supabaseClient.auth.signOut();
-                        location.reload();
-                    };
-                }
-            } else {
-                if (loginLink) loginLink.style.display = 'flex';
-                if (accountLink) accountLink.style.display = 'none';
-                if (logoutLink) logoutLink.style.display = 'none';
-                const staffBtn = document.querySelector('.staff-btn');
-                if (staffBtn) staffBtn.remove();
-            }
-        }
-
-        checkSupabaseSession();
-
-        let selectedAddons = {
-            'bot-ticket': false,
-            'bot-welcome': false,
-            'bot-commands': false,
-            'bot-wishes': false
         };
 
         function toggleAddon(addon, element) {
@@ -505,7 +369,19 @@
             
             const totalUSD = Math.round(totalPrice / 7);
             const btnText = translations[currentLang]['submit-btn'];
-            document.getElementById('submit-btn').textContent = btnText + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
+            const currency = currentLang === 'da' ? 'kr.' : 'DKK';
+            document.getElementById('submit-btn').textContent = btnText + ' (' + totalPrice + ' ' + currency + ' / ' + totalUSD + ' USD)';
+        }
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            updatePrice();
         }
 
         function submitBot() {
@@ -525,6 +401,70 @@
             localStorage.setItem('pendingOrder', finalChoice);
             window.location.href = 'tickets.html';
         }
+
+        // Auth og UI logik
+        async function checkSupabaseSession() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            updateUI(session);
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                updateUI(session);
+            } else if (event === 'SIGNED_OUT') {
+                updateUI(null);
+            }
+        });
+
+        function updateUI(session) {
+            const loginLink = document.getElementById('login-link');
+            const accountLink = document.getElementById('account-link');
+            const logoutLink = document.getElementById('logout-link');
+            const navMenu = document.getElementById('nav-menu');
+
+            const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
+
+            if (session && session.user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
+                localStorage.setItem('isStaff', staffIds.includes(discordId) ? 'true' : 'false');
+            } else {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('isStaff');
+            }
+
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const isStaff = localStorage.getItem('isStaff') === 'true';
+            const lang = localStorage.getItem('language') || 'en';
+
+            if (isLoggedIn) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (accountLink) {
+                    accountLink.style.display = 'flex';
+                    accountLink.textContent = translations[lang]['nav-account'];
+                }
+                if (logoutLink) logoutLink.style.display = 'flex';
+                if (isStaff && !document.querySelector('.staff-btn')) {
+                    const adminBtn = document.createElement('a');
+                    adminBtn.href = 'admin.html';
+                    adminBtn.className = 'staff-btn';
+                    adminBtn.textContent = 'Staff Panel';
+                    navMenu.appendChild(adminBtn);
+                }
+            } else {
+                if (loginLink) loginLink.style.display = 'flex';
+                if (accountLink) accountLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = 'none';
+            }
+        }
+
+        // Initialisering
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'dark') document.body.classList.add('dark-theme');
+        
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
+        checkSupabaseSession();
     </script>
 </body>
 </html>

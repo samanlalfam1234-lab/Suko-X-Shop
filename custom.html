@@ -78,19 +78,6 @@
             text-transform: uppercase;
         }
 
-        /* 3D Logo Styling */
-        .logo-3d {
-            filter: drop-shadow(2px 2px 0px var(--accent)) 
-                    drop-shadow(4px 4px 8px rgba(59, 130, 246, 0.3));
-            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
-            transition: var(--transition);
-        }
-
-        .logo-3d:hover {
-            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.05);
-            filter: drop-shadow(2px 2px 8px rgba(59, 130, 246, 0.4));
-        }
-
         nav {
             display: flex;
             align-items: center;
@@ -120,7 +107,6 @@
             color: var(--accent);
         }
 
-        /* Specifik styling til Staff knappen */
         .staff-btn {
             border-color: rgba(204, 0, 0, 0.3) !important;
             color: #cc0000 !important;
@@ -137,7 +123,6 @@
             border-color: #cc0000 !important;
         }
 
-        /* Specifik styling til Log ud */
         .logout-nav-btn:hover {
             background: #ff4444 !important;
             color: white !important;
@@ -168,25 +153,15 @@
             box-shadow: var(--shadow);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-            position: relative;
-            z-index: 10;
         }
 
         .option-card:hover { 
-            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-5px); 
+            transform: translateY(-5px); 
             border-color: var(--accent); 
             box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
-            z-index: 11;
         }
 
-        .option-card.selected { 
-            border-color: var(--accent); 
-            background: var(--accent-light); 
-            box-shadow: 0 0 0 2px var(--accent), var(--shadow); 
-            transform: scale(1.02);
-            z-index: 12;
-        }
+        .option-card.selected { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
 
         .addons-section {
             display: none;
@@ -195,11 +170,7 @@
             padding: 30px;
             margin-top: 30px;
             border: 1px solid var(--border);
-            position: relative;
-            z-index: 10;
         }
-
-        .addons-section.active { display: block; animation: fadeIn 0.4s ease; }
 
         .addon-list { display: flex; flex-direction: column; gap: 15px; }
 
@@ -212,18 +183,10 @@
             border: 1px solid var(--border);
             cursor: pointer;
             gap: 12px;
-            transition: all 0.2s ease;
-            position: relative;
-            z-index: 11;
         }
 
-        .addon-item:hover { border-color: var(--accent); transform: translateX(5px); z-index: 12; }
-        .addon-item.selected { 
-            border-color: var(--accent); 
-            background: var(--accent-light);
-            box-shadow: 0 0 0 1px var(--accent);
-            z-index: 13;
-        }
+        .addon-item:hover { border-color: var(--accent); }
+        .addon-item.selected { border-color: var(--accent); background: var(--accent-light); }
 
         .checkbox {
             width: 20px;
@@ -253,11 +216,6 @@
         .addon-name { font-weight: 600; font-size: 14px; }
         .addon-price { color: var(--accent); font-weight: 600; font-size: 14px; flex-shrink: 0; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .option-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
         .option-price { font-size: 18px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
         .option-desc { font-size: 14px; color: var(--text-dim); }
@@ -276,80 +234,19 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 14px var(--accent-light);
+            width: 100%;
+            margin-top: 40px;
         }
 
-        .btn:hover:not(:disabled) {
+        .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 24px var(--accent-light);
             filter: brightness(1.1);
         }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .back-link { display: block; margin-bottom: 40px; color: var(--text-dim); text-decoration: none; font-size: 14px; }
 
         footer { padding: 40px 5%; text-align: center; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); }
-
-        /* Regn effekt */
-        .rain-drop {
-            position: fixed;
-            top: -10px;
-            width: 2px;
-            height: 10px;
-            background: var(--accent);
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 9999;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-            }
-        }
-
-        /* Toast Styling */
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: rgba(17, 24, 33, 0.95);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 12px;
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            pointer-events: auto;
-        }
-
-        .toast.error { border-left-color: #ff4444; }
-        .toast.success { border-left-color: #00c853; }
-
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes toastOut {
-            from { opacity: 1; transform: translateY(0) scale(1); }
-            to { opacity: 0; transform: translateY(-20px) scale(0.9); }
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -372,55 +269,54 @@
         <a href="pricing.html" class="back-link" data-i18n="back-link">← Tilbage til Store</a>
 
         <h1 data-i18n="title">Custom Hjemmeside.</h1>
-        <p class="subtitle" data-i18n="subtitle">Vælg din type og beskriv dine ønsker. Startpris: 20 kr. / 3 USD + 5 kr. / 1 USD pr. funktion.</p>
+        <p class="subtitle" data-i18n="subtitle">Vælg din type og beskriv dine ønsker.</p>
 
         <div class="options-grid" id="type-options">
-            <div class="option-card" id="card-fivem" onclick="selectType('fivem', this)">
+            <div class="option-card" onclick="selectType('fivem', this)">
                 <div class="option-title" data-i18n="fivem-title">FiveM Hjemmeside</div>
-                <div class="option-price">20 DKK / 3 USD</div>
+                <div class="option-price" data-i18n="price-20">20 DKK / 3 USD</div>
                 <div class="option-desc" data-i18n="fivem-desc">En professionel hjemmeside til din FiveM-server.</div>
             </div>
 
-            <div class="option-card" id="card-other" onclick="selectType('other', this)">
+            <div class="option-card" onclick="selectType('other', this)">
                 <div class="option-title" data-i18n="other-title">Andet</div>
-                <div class="option-price">45 DKK / 6 USD</div>
+                <div class="option-price" data-i18n="price-45">45 DKK / 6 USD</div>
                 <div class="option-desc" data-i18n="other-desc">Din egen ide - beskriv hvad du ønsker!</div>
             </div>
         </div>
 
-        <!-- Website Addons Section -->
-        <div class="addons-section" id="addons-website">
+        <div class="addons-section">
             <h3 style="margin-bottom: 20px;" data-i18n="addons-title">Vælg dine tilvalg (+5 kr. / 1 USD hver):</h3>
             <div class="addon-list">
                 <div class="addon-item" onclick="toggleAddon('leaderboard', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-leaderboard">Leaderboard</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-5">+5 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('apply', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-apply">Ansøgningssystem</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-5">+5 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('whitelist', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-whitelist">Whitelist</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-5">+5 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('admin', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-admin">Admin Panel</div></div>
-                    <div class="addon-price">+5 DKK / 1 USD</div>
+                    <div class="addon-price" data-i18n="price-5">+5 DKK / 1 USD</div>
                 </div>
                 <div class="addon-item" onclick="toggleAddon('wishes', this)">
                     <div class="checkbox"></div>
                     <div class="addon-label"><div class="addon-name" data-i18n="addon-wishes">Dine ønsker/du kan skrive dine ønsker på næste side</div></div>
-                    <div class="addon-price">+0 DKK / 0 USD</div>
+                    <div class="addon-price" data-i18n="price-0">+0 DKK / 0 USD</div>
                 </div>
             </div>
         </div>
 
-        <button class="btn" onclick="submitCustom()" id="submit-btn" data-i18n="submit-btn">Fortsæt til bestilling (20 DKK / 3 USD)</button>
+        <button class="btn" onclick="submitCustom()" id="submit-btn" data-i18n="submit-btn">Fortsæt til bestilling</button>
     </div>
 
     <footer>
@@ -428,46 +324,20 @@
     </footer>
 
     <script>
+        // Globale variabler defineret først
+        let selectedType = null;
+        let selectedAddons = {
+            'leaderboard': false,
+            'apply': false,
+            'whitelist': false,
+            'admin': false,
+            'wishes': false
+        };
+
         // Supabase configuration
         const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Regn effekt logik
-        function createRain() {
-            const drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-            drop.style.opacity = Math.random() * 0.5;
-            document.body.appendChild(drop);
-            
-            setTimeout(() => {
-                drop.remove();
-            }, 1000);
-        }
-
-        setInterval(createRain, 50);
-
-        // Toast functionality
-        function showToast(message, type = 'info') {
-            let container = document.querySelector('.toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.className = 'toast-container';
-                document.body.appendChild(container);
-            }
-
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<span>${message}</span>`;
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'toastOut 0.4s ease forwards';
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
-        }
 
         const translations = {
             'en': {
@@ -491,11 +361,14 @@
                 'nav-account': 'Account',
                 'nav-logout': 'Log Out',
                 'footer-copy': '© 2026 Suko Shop. All rights reserved.',
-                'alert-type': 'Please select a type.'
+                'price-20': '20 DKK / 3 USD',
+                'price-45': '45 DKK / 6 USD',
+                'price-5': '+5 DKK / 1 USD',
+                'price-0': '+0 DKK / 0 USD'
             },
             'da': {
                 'back-link': '← Tilbage til Store',
-                'title': 'Custom Løsning.',
+                'title': 'Custom Hjemmeside.',
                 'subtitle': 'Vælg din type og beskriv dine ønsker.',
                 'fivem-title': 'FiveM Hjemmeside',
                 'fivem-desc': 'En professionel hjemmeside til din FiveM-server.',
@@ -505,7 +378,7 @@
                 'addon-leaderboard': 'Leaderboard',
                 'addon-apply': 'Ansøgningssystem',
                 'addon-whitelist': 'Whitelist',
-                'addon-admin': 'Admin Panel',
+                'addon-admin': 'Adminpanel',
                 'addon-wishes': 'Dine ønsker/du kan skrive dine ønsker på næste side',
                 'submit-btn': 'Fortsæt til bestilling',
                 'nav-home': 'Store',
@@ -514,43 +387,116 @@
                 'nav-account': 'Konto',
                 'nav-logout': 'Log ud',
                 'footer-copy': '© 2026 Suko Shop. Alle rettigheder forbeholdes.',
-                'alert-type': 'Vælg venligst en type.'
+                'price-20': '20 kr. / 3 USD',
+                'price-45': '45 kr. / 6 USD',
+                'price-5': '+5 kr. / 1 USD',
+                'price-0': '+0 kr. / 0 USD'
             }
         };
+
+        function selectType(type, element) {
+            selectedType = type;
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Vis kun addons hvis FiveM er valgt
+            const addonsSection = document.querySelector('.addons-section');
+            if (type === 'fivem') {
+                addonsSection.style.display = 'block';
+            } else {
+                addonsSection.style.display = 'none';
+                // Nulstil addons hvis man skifter væk fra FiveM
+                Object.keys(selectedAddons).forEach(key => selectedAddons[key] = false);
+                document.querySelectorAll('.addon-item').forEach(item => item.classList.remove('selected'));
+            }
+            
+            updatePrice();
+        }
+
+        function toggleAddon(addon, element) {
+            selectedAddons[addon] = !selectedAddons[addon];
+            element.classList.toggle('selected');
+            updatePrice();
+        }
+
+        function updatePrice() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            let totalPrice = 0;
+            
+            if (selectedType === 'fivem') {
+                totalPrice = 20;
+                Object.keys(selectedAddons).forEach(key => {
+                    if (selectedAddons[key] && key !== 'wishes') totalPrice += 5;
+                });
+            } else if (selectedType === 'other') {
+                totalPrice = 45;
+            }
+
+            if (totalPrice === 0) {
+                document.getElementById('submit-btn').textContent = translations[currentLang]['submit-btn'];
+                return;
+            }
+            
+            const totalUSD = Math.round(totalPrice / 7);
+            const currency = currentLang === 'da' ? 'kr.' : 'DKK';
+            document.getElementById('submit-btn').textContent = translations[currentLang]['submit-btn'] + ' (' + totalPrice + ' ' + currency + ' / ' + totalUSD + ' USD)';
+        }
 
         function updateLanguage(lang) {
             localStorage.setItem('language', lang);
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
+                if (translations[lang] && translations[lang][key]) {
                     el.innerHTML = translations[lang][key];
                 }
             });
             updatePrice();
         }
 
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark' || !currentTheme) {
-            document.body.classList.add('dark-theme');
-            if (!currentTheme) localStorage.setItem('theme', 'dark');
+        function submitCustom() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            if (!selectedType) {
+                alert(currentLang === 'da' ? 'Vælg venligst en type først!' : 'Please select a type first!');
+                return;
+            }
+            
+            let totalPrice = selectedType === 'fivem' ? 20 : 45;
+            let addonsList = [];
+            
+            if (selectedType === 'fivem') {
+                Object.keys(selectedAddons).forEach(key => {
+                    if (selectedAddons[key]) {
+                        addonsList.push(key);
+                        if (key !== 'wishes') totalPrice += 5;
+                    }
+                });
+            }
+            
+            const totalUSD = Math.round(totalPrice / 7);
+            const typeText = selectedType === 'fivem' ? 
+                           (currentLang === 'da' ? 'FiveM Hjemmeside' : 'FiveM Website') : 
+                           (currentLang === 'da' ? 'Custom Hjemmeside' : 'Custom Website');
+            
+            const addonsText = addonsList.length > 0 ? 
+                              (currentLang === 'da' ? ' med ' + addonsList.join(', ') : ' with ' + addonsList.join(', ')) : 
+                              '';
+            
+            const currency = currentLang === 'da' ? 'DKK' : 'DKK'; // Standardize to DKK for database/admin
+            const finalChoice = typeText + addonsText + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
+            
+            localStorage.setItem('pendingOrder', finalChoice);
+            window.location.href = 'tickets.html';
         }
 
-        const savedLang = localStorage.getItem('language') || 'en';
-        updateLanguage(savedLang);
-
-        // Supabase session check
         async function checkSupabaseSession() {
             const { data: { session }, error } = await supabaseClient.auth.getSession();
             updateUI(session);
         }
 
-        // Lyt efter auth ændringer
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                updateUI(session);
-            } else if (event === 'SIGNED_OUT') {
-                updateUI(null);
-            }
+            updateUI(session);
         });
 
         function updateUI(session) {
@@ -559,25 +505,12 @@
             const logoutLink = document.getElementById('logout-link');
             const navMenu = document.getElementById('nav-menu');
 
-            // Skjul nuværende side i menuen
-            const currentPage = window.location.pathname.split("/").pop() || 'custom.html';
-            document.querySelectorAll('#nav-menu a').forEach(link => {
-                const linkPage = link.getAttribute('href');
-                if (linkPage === currentPage) {
-                    link.style.display = 'none';
-                }
-            });
-
             const staffIds = ['1082667160461127720', '1231963657047375937', '1192535733987184680', '727130234125680641', '776463695299346442'];
 
             if (session && session.user) {
                 localStorage.setItem('isLoggedIn', 'true');
                 const discordId = session.user.user_metadata.provider_id || session.user.user_metadata.sub;
-                if (staffIds.includes(discordId)) {
-                    localStorage.setItem('isStaff', 'true');
-                } else {
-                    localStorage.setItem('isStaff', 'false');
-                }
+                localStorage.setItem('isStaff', staffIds.includes(discordId) ? 'true' : 'false');
             } else {
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('isStaff');
@@ -593,8 +526,14 @@
                     accountLink.style.display = 'flex';
                     accountLink.textContent = translations[lang]['nav-account'];
                 }
-                if (logoutLink) logoutLink.style.display = 'flex';
-
+                if (logoutLink) {
+                    logoutLink.style.display = 'flex';
+                    logoutLink.onclick = async (e) => {
+                        e.preventDefault();
+                        await supabaseClient.auth.signOut();
+                        location.reload();
+                    };
+                }
                 if (isStaff && !document.querySelector('.staff-btn')) {
                     const adminBtn = document.createElement('a');
                     adminBtn.href = 'admin.html';
@@ -602,78 +541,20 @@
                     adminBtn.textContent = 'Staff Panel';
                     navMenu.appendChild(adminBtn);
                 }
-
-                if (logoutLink) {
-                    logoutLink.onclick = async (e) => {
-                        e.preventDefault();
-                        await supabaseClient.auth.signOut();
-                        location.reload();
-                    };
-                }
             } else {
                 if (loginLink) loginLink.style.display = 'flex';
                 if (accountLink) accountLink.style.display = 'none';
                 if (logoutLink) logoutLink.style.display = 'none';
-                const staffBtn = document.querySelector('.staff-btn');
-                if (staffBtn) staffBtn.remove();
             }
         }
 
+        // Initialisering
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'dark') document.body.classList.add('dark-theme');
+        
+        const savedLang = localStorage.getItem('language') || 'en';
+        updateLanguage(savedLang);
         checkSupabaseSession();
-
-        let selectedType = '';
-        let selectedAddons = { leaderboard: false, apply: false, whitelist: false, admin: false, wishes: false };
-
-        function selectType(type, element) {
-            selectedType = type;
-            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            const addonsWebsite = document.getElementById('addons-website');
-            if (type === 'fivem') addonsWebsite.classList.add('active');
-            else addonsWebsite.classList.remove('active');
-            selectedAddons = { leaderboard: false, apply: false, whitelist: false, admin: false, wishes: false };
-            document.querySelectorAll('.addon-item').forEach(item => item.classList.remove('selected'));
-            updatePrice();
-        }
-
-        function toggleAddon(addon, element) {
-            selectedAddons[addon] = !selectedAddons[addon];
-            element.classList.toggle('selected');
-            updatePrice();
-        }
-
-        function updatePrice() {
-            const currentLang = localStorage.getItem('language') || 'en';
-            let totalPrice = 20;
-            if (selectedType === 'other') totalPrice = 45;
-            else if (selectedType === 'fivem') {
-                totalPrice = 20;
-                const addonCount = ['leaderboard', 'apply', 'whitelist', 'admin'].filter(a => selectedAddons[a]).length;
-                totalPrice += (addonCount * 5);
-            }
-            const totalUSD = Math.round(totalPrice / 7);
-            const btnText = translations[currentLang]['submit-btn'];
-            document.getElementById('submit-btn').textContent = btnText + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
-        }
-
-        function submitCustom() {
-            const currentLang = localStorage.getItem('language') || 'en';
-            if (!selectedType) { showToast(translations[currentLang]['alert-type'], 'error'); return; }
-            let addonsList = [];
-            let totalPrice = selectedType === 'other' ? 45 : 20;
-            if (selectedType === 'fivem') {
-                if (selectedAddons.leaderboard) { addonsList.push('Leaderboard'); totalPrice += 5; }
-                if (selectedAddons.apply) { addonsList.push('Ansøgningssystem'); totalPrice += 5; }
-                if (selectedAddons.whitelist) { addonsList.push('Whitelist'); totalPrice += 5; }
-                if (selectedAddons.admin) { addonsList.push('Admin Panel'); totalPrice += 5; }
-                if (selectedAddons.wishes) { addonsList.push('Specielle ønsker'); }
-            }
-            const totalUSD = Math.round(totalPrice / 7);
-            const addonsDisplay = addonsList.length > 0 ? ' + ' + addonsList.join(', ') : '';
-            const finalChoice = 'Custom (' + (selectedType === 'other' ? 'Other' : 'FiveM') + ')' + addonsDisplay + ' (' + totalPrice + ' DKK / ' + totalUSD + ' USD)';
-            localStorage.setItem('pendingOrder', finalChoice);
-            window.location.href = 'tickets.html';
-        }
     </script>
 </body>
 </html>

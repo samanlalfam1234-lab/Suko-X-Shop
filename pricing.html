@@ -181,20 +181,19 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            z-index: 1;
         }
 
         .store-card:hover { 
-            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-10px);
             border-color: var(--accent);
             box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
-            z-index: 20;
+            transform: translateY(-5px);
         }
 
         .store-card.selected { 
@@ -309,24 +308,6 @@
             .hero h1 { font-size: 32px; }
             .hero p { font-size: 18px; }
         }
-    <style id="rain-style">
-        .rain-drop {
-            position: fixed;
-            top: -10px;
-            width: 2px;
-            height: 10px;
-            background: var(--accent);
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 9999;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-            }
-        }
     </style>
 </head>
 <body>
@@ -351,28 +332,28 @@
 
     <main class="store-grid">
         <!-- Standard Website -->
-        <div class="store-card" onclick="window.location.href='templates.html'">
+        <a href="templates.html" class="store-card">
             <div class="card-label" data-i18n="label-standard">Standard</div>
             <div class="card-title" data-i18n="title-standard">Standard Hjemmeside</div>
             <div class="card-price" data-i18n="price-standard">25 kr. / 4 USD</div>
             <p data-i18n="text-standard">Vælg mellem færdige designs til dit projekt.</p>
-        </div>
+        </a>
 
         <!-- Custom Website -->
-        <div class="store-card" onclick="window.location.href='custom.html'">
+        <a href="custom.html" class="store-card">
             <div class="card-label" data-i18n="label-pro">Professionel</div>
             <div class="card-title" data-i18n="title-custom">Custom Hjemmeside</div>
             <div class="card-price" id="custom-price-display" data-i18n="price-from">Fra 20 kr. / 3 USD</div>
             <p data-i18n="text-custom">Vælg dine funktioner. 20 kr. / 3 USD startpris + 5 kr. / 1 USD pr. del.</p>
-        </div>
+        </a>
 
         <!-- Discord Bot -->
-        <div class="store-card" onclick="window.location.href='bot-custom.html'">
+        <a href="bot-custom.html" class="store-card">
             <div class="card-label" data-i18n="label-bot">Automatisering</div>
             <div class="card-title" data-i18n="title-bot">Discord Bot</div>
             <div class="card-price" data-i18n="price-bot-from">Fra 45 kr. / 6 USD</div>
             <p data-i18n="text-bot">Skræddersy din egen Discord-bot med avancerede funktioner.</p>
-        </div>
+        </a>
     </main>
 
     <footer>
@@ -385,22 +366,6 @@
         const SUPABASE_URL = 'https://avyebxjocguzailnkfzb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_GUW_t6DSac2DXbDYwq_F8A_d_tALjmJ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Regn effekt logik
-        function createRain() {
-            const drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-            drop.style.opacity = Math.random() * 0.5;
-            document.body.appendChild(drop);
-            
-            setTimeout(() => {
-                drop.remove();
-            }, 1000);
-        }
-
-        setInterval(createRain, 50);
 
         const translations = {
             'en': {
