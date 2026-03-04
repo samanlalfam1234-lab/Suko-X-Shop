@@ -16,6 +16,7 @@
             --accent-light: rgba(59, 130, 246, 0.1);
             --border: rgba(59, 130, 246, 0.1);
             --shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+            --accent-glow: rgba(59, 130, 246, 0.4);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -26,6 +27,7 @@
             --text-dim: #94a3b8;
             --accent: #3b82f6;
             --accent-light: rgba(59, 130, 246, 0.15);
+            --accent-glow: rgba(59, 130, 246, 0.6);
             --border: rgba(255, 255, 255, 0.05);
             --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             background: linear-gradient(-45deg, #0a0e14, #111821, #05080c, #111821);
@@ -172,8 +174,8 @@
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            width: 98vw;
-            max-width: 1900px;
+            width: 90vw;
+            max-width: 1200px;
         }
 
         .template-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); }
@@ -188,7 +190,7 @@
 
         .preview-scroll, .preview-img {
             width: 100%;
-            height: 950px;
+            height: 600px;
             background: #000;
             display: flex;
             overflow-x: auto;
@@ -216,14 +218,14 @@
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             z-index: 10;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
@@ -356,19 +358,25 @@
                 <button class="nav-btn nav-prev" onclick="scrollGallery(this, -1)">❮</button>
                 <!-- ÆNDRE BILLEDER FOR TEMPLATE HER -->
                 <div class="preview-scroll">
-                    <img src="h1.png" alt="Hero">
-                    <img src="h11.png" alt="Why Choose Us">
-                    <img src="h111.png" alt="Rules">
-                    <img src="h1111.png" alt="Applications">
+                    <img src="fivem%20hjemmeside%201.png" alt="1">
+                    <img src="fivem%20hjemmeside%202.png" alt="2">
+                    <img src="/fivem hjemmeside 3.png" alt="3">
+                    <img src="/fivem hjemmeside 4.png" alt="4">
+                    <img src="/fivem hjemmeside 5.png" alt="5">
+                    <img src="/fivem hjemmeside 6.png" alt="6">
+                    <img src="/fivem hjemmeside 7.png" alt="7">
+                    <img src="/fivem hjemmeside 8.png" alt="8">
+                    <img src="/fivem hjemmeside 10.png" alt="9">
+                    <img src="/fivem hjemmeside 9.png" alt="10">
                 </div>
                 <button class="nav-btn nav-next" onclick="scrollGallery(this, 1)">❯</button>
             </div>
             <div class="template-info">
-                <div class="template-price">25 DKK / 4 USD</div>
+                <div class="template-price">65 DKK / 10 USD</div>
                 <h3 data-i18n="t1-name">FiveM Hjemmeside 1</h3>
                 <p data-i18n="t1-desc">Et mørkt og intenst design med direkte links til din Discord og server IP.</p>
                 <div style="margin-top: 20px;">
-                    <a href="#" class="btn-select" onclick="chooseTemplate('FiveM Hjemmeside 1', '25 DKK / 4 USD')" data-i18n="btn-choose">Vælg denne</a>
+                    <a href="#" class="btn-select" onclick="chooseTemplate('FiveM Hjemmeside 1', '65 DKK / 10 USD')" data-i18n="btn-choose">Vælg denne</a>
                 </div>
             </div>
         </div>
@@ -547,7 +555,7 @@
         function chooseTemplate(name, price) {
             localStorage.setItem('pendingOrder', 'Standard (' + name + ')');
             localStorage.setItem('selectedTemplate', name);
-            localStorage.setItem('selectedPrice', price || '25 DKK / 4 USD');
+            localStorage.setItem('selectedPrice', price || '65 DKK / 10 USD');
             window.location.href = 'tickets.html';
         }
     </script>
